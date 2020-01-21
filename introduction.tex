@@ -1,0 +1,56 @@
+\section{Introduction}
+
+Static analysis of code is one of the most effective ways to avoid defects in software.  Static analysis can find problems that are extremely hard to detect by testing, e.g. when the inputs triggering a bug are 
+
+Mutation testing \cite{demillo1978hints,budd1980theoretical} (or mutation analysis, the term we will use in this work, for reasons that will become clear) uses small syntactic changes to a program to introduce synthetic ``faults,'' under the assumption that if the original version of a program is (mostly) correct, most small changes will therefore introduce a fault.  For the most part, mutation analysis has been used to evaluate test suites by computing a score (the ratio of mutants the suite detects, or ``kills'').  Most such use has been in research efforts, rather than practical testing efforts, though there has been sporadic use by interested developers.
+In an ASE 2015 \cite{groce2015verified} paper and a 2018 journal extension \cite{groce2018verified} of that paper, Groce et al. proposed examining individual mutants that survive a formal verification or automated test generation process to detect and correct weaknesses in a specification or test generator.  The approach was able to expose bugs in a heavily-tested module of the Linux kernel \cite{mutKernel} and improve a heavily used test generator for the {\tt pyfakefs} file system.  Recently, mutation analysis has been adopted in industrial settings, though not for actual examination of all surviving mutants \cite{MutGoogle,ivankovic2018industrial}, a practice that is hard to scale to large code bodies.
+
+\subsection{Differential Mutation Analysis}
+
+We can say that a static analysis tool kills a mutant when the number of (non-informational or optimization related) warnings or errors produced with respect to the code \emph{increases} for the mutated version, compared to the original code.  This difference is most informative and easily interpreted when the original code produces no warnings or errors (it is ``clean''); for non-clean code, a tool conceivably could detect the mutant, but only change a previously generated warning, not add an additional warning, leading to an underestimate of effectiveness.  However, even for non-clean code, most detected mutants will produce a new warning.
+
+The value of the differential comparison lies in a few key points.  First, this is a measure that does not reward a tool that produces too many false positives.  The tool cannot simply flag all code as having a problem or it will perform poorly at the task of \emph{distinguishing} the mutated code from non-mutated (and presumably at least \emph{more} correct) code.  Based on verification and testing uses of mutation, it is safe to say that at least 50, and likely 60-70\% or more, of mutants that are not semantically equivalent to the original code are actually fault-inducing, so the task presented to a static analysis tool is the generalization of the task we ideally expect static analysis to perform:  to identify faulty code, without executing it, and, most critically, \emph{to distinguish faulty from correct code}.  Obviously, many faults cannot be identified statically without a complete specification, or without unreasonable analysis cost and precision, but the measure of performance here is meant to be mostly \emph{relative} to other tools applied to the same code; this is primarily a \emph{differential} approach.
+
+Second, and critically, this is an \emph{automatable} method that can provide an evaluation of static analysis tools over a large number of target source code files, without requiring human effort to classify results as real bugs or false positives.  It is not clear that any other fully automatic method is competitively meaningful; it is possible that methods based on code changes from version control provide some of the same benefits, but these require classification of changes into bug-fixes and non-bug-fixes, and of course require version control history.  Also, history-based methods will be biased towards precisely those faults humans (or tools) were able to detect and fix.
+
+It is the combination of differential comparison and mutation that is key.  Differential comparison of tools, alone, is not meaningful, without additional effort; na\"ive approaches will not work \cite{regehrRandom}.  Consider a comparison of the number of issues detected between two tools over a single program, or over a large set of programs.  If one tool emits more warnings and errors than another, it may mean that the tool is more effective at finding bugs; but it may also mean that it has a higher false positive rate.  Without human examination of the individual issues, it is impossible to be sure, or even (in cases where the tools are reasonably comparable) to make an informed guess.  Using mutants, however, provides a foreground to compare to this background.  In particular, for a large set of programs, the most informative result will be when 1) tool A reports fewer issues on average than tool B over the un-mutated programs but 2) tool A also detects more mutants.  This is strong evidence that A is simply better all-around than B; it likely has a lower false positive rate \emph{and} a lower false negative rate.  While it is not proof of this claim, it is hard to construct another plausible explanation for reporting \emph{fewer} issues on un-mutated contracts while still detecting \emph{more} mutants.  Other than having better precision and recall, how else could a tool effectively distinguish mutated from un-mutated code?
+
+Finally, even when two tools have similar quantitative results, examining individual mutants killed by one tool but not by another allows us to understand strengths and weaknesses of the tools, in a context that makes comprehending the cause of the detection (or lack of it) easy: the difference between the un-mutated code and mutated code will always be small and relatively simple.  This leads to the idea of improving static analysis tools by examining mutants detected by another tool (thus known to be in-principle detectable) but not by the tool to be improved.  Of course, any faults in code, not just mutants, could serve this purpose.  But, again, the automatic nature of mutation generation, and the presumption that the mutation is indeed a fault, is useful.  Moreover, because mutants follow syntactic patterns, searching for similar mutants/faults the tool to be improved does not detect is much easier than with arbitrary faults, and can be partly automated.  Of course, knowing which mutation patterns are of interest requires human effort.  As with efforts to improve test suites, manually searching through all mutants can be an onerous task, especially for large-scale evaluations.  We therefore also introduce the idea of prioritizing mutants, using a Furthest-Point-First \cite{Gonzalez} algorithm and distance metric inspired by previous work on helping developers sort through failing test cases and avoid duplicates \cite{PLDI13}, to help static analysis tool developers find interesting patterns without wading through numerous uninteresting duplicates.
+
+\subsection{A Simple Example}
+
+\begin{figure}
+{\scriptsize
+\begin{code}
+pragma solidity ^0.4.0;
+
+contract SimpleStorage \{
+    uint storedData;
+
+    function set(uint x) public \{
+        storedData = x;
+    \}
+
+    function get() public view returns (uint) \{
+        return storedData;
+    \}
+  \}
+\end{code}
+}
+\caption{A simple example Solidity smart contract from \url{https://solidity.readthedocs.io/en/v0.4.24/introduction-to-smart-contracts.html}.}
+\label{fig:sol424intro}
+\end{figure}
+
+Consider the code in Figure \ref{fig:sol424intro}, from the Solidity 0.4.24 ``Introduction to Smart Contracts''.  The Universal Mutator tool \cite{universalmutator,regexpMut}, which has been extensively tuned for Solidity mutation (and is the only smart contract mutation tool referenced in the Solidity documentation (\url{https://solidity.readthedocs.io/en/v0.5.12/resources.html})) produces seven valid, non-redundant mutants for this trivial example code.  Both the public version of Slither \cite{slither} and SmartCheck \cite{smartcheck} produce a small number (three and two, respectively) of low-severity, informational, warnings for this code.  Both tools also detect (by increasing the number of warnings produced) four of the seven mutants.  However, only one of the mutants detected is common to both tools: both tools detect changing the {\tt return} statement in the {\tt get} function to a call to {\tt selfdestruct} the smart contract.  Slither, but not SmartCheck, also detects replacing the assignment of {\tt storedData} in {\tt set} with either a {\tt selfdestruct} or {\tt revert}, or simply removing it altogether.  SmartCheck, on the other hand, detects removing the {\tt return} in {\tt get} or replacing it with a {\tt revert}, or removing the {\tt public} visibility modifier for {\tt get} \footnote{Slither's ``missing return'' detector is only available in the private version of slither, or through the {\tt crytic} service provided by Trail of Bits.}.  If we restrict our analyis to issues with a severity greater than informational, SmartCheck detects no mutants of the contract, while Slither still reports that some mutants \emph{allow an arbitrary caller to cause the contract to self destruct}.  This simple example shows how our approach works on a small scale.  Using large numbers of larger, more realistic contracts makes it possible to extract the same kind of information, on a much larger scale.  Prioritization of mutants is not very useful here (ranking three mutant saves little effort), so we will show the utility of that approach in our full Solidity results.
+
+\subsection{Contributions}
+
+This paper offers the following contributions:
+
+\begin{itemize}
+\item We propose a differential approach to comparing static analysis tools based on the insight that program mutants provide an automated source of simple, easy-to-understand program changes that are likely faults.
+\item We propose a definition of mutant killing that works well in a static analysis context.
+\item We introduce a simple scheme for prioritizing mutants that helps users understand the results of analysis and guide efforts to improve, rather than simple compare, tools.
+\item We apply our method to an extensive, in-depth comparison of three Solidity smart contract analysis tools, and show how prioritization allowed us to easily identify (and build) three new detectors for the most effective of these tools.
+\item We further provide results for comparisons of popular Java and Python static analysis tools, showing the general usefulness of our methods, and giving a new picture of the comparative effectiveness of these tools.
+\end{itemize}
