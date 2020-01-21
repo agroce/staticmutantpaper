@@ -1,6 +1,24 @@
-\section{Comparisons of Static Analysis Tools}
+\section{Comparison and Improvements of Static Analysis Tools}
 
 \subsection{Solidity Smart Contract Tools}
+
+\subsubsection{Smart Contracts and Smart Contract Static Analysis}
+
+Smart contracts are autonomous code instruments, usually operating on a blockchain, that often have critical responsibilities such as facilitating and verifying (large) financial services transactions, tracking high-value physical goods or intellectual property, or even controlling ``decentralized organizations'' with multifarious aspects.  Security and correctness are thus critical in the smart contract domain, and static analysis is a key way to ensure allocation of high-value resources is not compromised.  The most popular smart contract platform, by far, is the Ethereum blockchain, and the Solidity smart contract language \cite{buterin2013whitepaper,wood2014yellow}; the Ethereum cryptocurrency has a market capitalization as we write of over \$15 billion dollars, largely fueled by interest in the smart contract functionality.  Ethereum contracts have been the targets of widely publicized attacks, with large financial consequences  \cite{spank,DAO}.   A recent paper examining results from 23 professional security audits of Solidity contracts argues that effective static analysis is a major key to avoiding such disasters in the future \cite{FC20}.
+
+We analyzed three well-known tools for static analysis of Solidity smart contracts: Slither \cite{slither}, SmartCheck \cite{smartcheck}, and Securify \cite{Securify}.
+
+\subsubsection{Original Program Selection}
+
+\subsubsection{Analysis Results}
+
+We first compare the two tools that performed best.  Slither detected 2.37 mean issues over the 100 contracts, and found 39 contracts free of all issues.  Slither had a mean mutation score of 0.09 over all contracts, and 0.11 over clean (according to Slither) contracts.  SmartCheck detected 1.89 mean issues over the 100 contracts, but only found 27 contracts free of all issues.  The mean issue counts for the tools were not statistically significantly different ($p=0.34$).  SmartCheck had a mean mutation score of 0.05 over all contracts, and 0.03 over clean (according to SmartCheck) contracts.  The ratio between mean issues (Slither / SmartCheck) is 1.25, and the ratio of numbers of clean contracts is similar (1.44).  The mutation score ratio, however, is 1.8, suggesting that Slither is not out-scoring SmartCheck \emph{only} because it produces more false positives.  Slither detects 3,520 mutants not detected by SmartCheck, while SmartCheck only detects 1,629 mutants not detected by Slither (of these, 1,256 were also not detected by Securify) .  Over the 7 contracts that both tools mark as clean, Slither has a mean mutation score of 0.08, and SmartCheck has a mean mutation score of 0.03; the difference, even with only 7 contracts, is statistically significant by paired Wilcoxon test, at $p=0.03$.
+
+Securify was an outlier, compared to the other tools.  First, while running Slither and SmartCheck on all 46,769 valid mutants was relatively quick, Securify often required hours to analyze a contract; the full analysis required over a month.  Second, Securify identified a mean of 24.65 issues on the un-mutated contracts, with a median of 17 issues found; this was a significant difference in issue counts from either other tool, with $p<1.0^{-15}$ in both cases.  Despite this huge number of non-informational warnings for the original contracts, the mean mutation score was even worse than for SmartCheck, 0.03.  For contracts where Securify found no issues in the original contract, it \emph{never} detected any mutants. Securify, however, did detect 1,449 mutants not detected by Slither, 1,076 of which were not detected by SmartCheck.  On the other hand, given the ratio of issue counts compared to both tools is over 10.0, it is fairly likely many of these \emph{are} false positives, despite the probability mutants are actual faults.
+
+Our recommendation, based on mutation analysis results, is that smart contract analysis should at least use both Slither and SmartCheck, perhaps applying only Slither until it reports no interesting issues.  Securify does offer a substantial non-overlapping set of issues reported, however, but produces a very large number of false positives.  Available human resources and total number of issues produced (as well as high runtime) might justify not using Securify in some cases.
+
+\subsubsection{Improving Slither}
 
 \subsection{Java Tools}
 

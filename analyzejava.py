@@ -23,6 +23,7 @@ with open("Java.csv") as javaResults:
             if row["spotbugs_killed"] == "0":
                 PMD_not_spotbugs += 1
         if row["Infer_killed"] == "1":
+            print(row)
             Infer_killed += 1
         try:
             spotbugs_warnings += int(row["Spotbug"])
