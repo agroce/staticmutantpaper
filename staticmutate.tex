@@ -1,0 +1,151 @@
+%
+% LaTeX template for prepartion of submissions to PLDI'16
+%
+% Requires temporary version of sigplanconf style file provided on
+% PLDI'16 web site.
+% 
+%\documentclass[format=sigconf]{acmart}
+%\documentclass[conference]{IEEEtran}
+%\documentclass[elsarticle]
+%\documentclass[preprint,12pt,authoryear]{elsarticle}
+%\documentclass[preprint,12pt]{elsarticle}
+\documentclass[sigconf]{acmart}
+
+
+% \documentclass[pldi-cameraready]{sigplanconf-pldi16}
+
+%
+% the following standard packages may be helpful, but are not required
+%
+%\usepackage{SIunits}            % typset units correctly
+%\usepackage{courier}            % standard fixed width font
+%\usepackage[scaled]{helvet} % see www.ctan.org/get/macros/latex/required/psnfss/psnfss2e.pdf
+\usepackage{url}                  % format URLs
+\usepackage{listings}          % format code
+\usepackage{enumitem}      % adjust spacing in enums
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+%\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{code}
+%\usepackage[colorlinks=true,allcolors=blue,breaklinks,draft=false]{hyperref}   % hyperlinks, including DOIs and URLs in bibliography
+% known bug: http://tex.stackexchange.com/questions/1522/pdfendlink-ended-up-in-different-nesting-level-than-pdfstartlink
+%\newcommand{\doi}[1]{doi:~\href{http://dx.doi.org/#1}{\Hurl{#1}}}   % print a hyperlinked DOI
+
+
+%\numberofauthors{2}
+
+%\alignauthor
+%Josie Holmes\\
+%\alignauthor 
+%Alex Groce\\
+%      \affaddr{School of Informatics, Computing \& Cyber Systems}\\
+%       \affaddr{Northern Arizona University
+%}
+
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
+% DOI
+%\acmDOI{10.475/123_4}
+
+% ISBN
+%\acmISBN{123-4567-24-567/08/06}
+
+%Conference
+%\acmConference[ISSTA'17]{International Symposium on Software Testing
+ % and Analysis}{July 2017}{Santa Barbara, California, USA}
+%\acmYear{2017}
+%\copyrightyear{2017}
+
+%\newcommand{\comment}[1]{}
+
+\begin{document}
+
+%\begin{frontmatter}
+
+\title{Using Differential Mutation Analysis to Compare and Improve
+  Static Analysis Tools}
+
+
+%\author{
+%\IEEEauthorblockN{Alex Groce}
+%\IEEEauthorblockA{School of Informatics, Computing \& Cyber Systems\\
+%Northern Arizona University\\
+%Email: agroce@gmail.com}
+%\and
+%\IEEEauthorblockN{Josie Holmes}
+%\IEEEauthorblockA{School of Informatics, Computing \& Cyber Systems\\
+%Northern Arizona University\\
+%Email: josie.holmes@nau.edu}}
+
+%\author{Alex Groce}
+%\ead{agroce@gmail.com}
+%\ead{https://agroce.github.io}
+%\address{School of Informatics, Computing \& Cyber Systems\\Northern
+%  Arizona University}
+%\author{Josie Holmes}
+%\ead{josie.holmes@nau.edu}
+%\address{School of Informatics, Computing \& Cyber Systems\\Northern
+%  Arizona University}
+
+%
+% any author declaration will be ignored  when using 'pldi' option (for double blind review)
+%
+
+%\authorinfo{Person 1 \and Person 2}
+%{\makebox{A Department} \\
+%\makebox{A University}  \\
+%\makebox{A Place, AS 12345}}
+%{\{person1,person2\}@cs.auniv.edu}
+
+%\begin{CCSXML}
+%<ccs2012>
+%<concept>
+%<concept_id>10011007.10010940.10010992.10010998.10011001</concept_id>
+%<concept_desc>Software and its engineering~Dynamic analysis</concept_desc>
+%<concept_significance>500</concept_significance>
+%</concept>
+%<concept>
+%<concept_id>10011007.10011074.10011099.10011102.10011103</concept_id>
+%<concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+%<concept_significance>500</concept_significance>
+%</concept>
+%</ccs2012>
+%\end{CCSXML}
+
+%\ccsdesc[500]{Software and its engineering~Dynamic analysis}
+%\ccsdesc[500]{Software and its engineering~Software testing and debugging}
+
+%\keywords{mutants, distance metrics, fault identification/localization}
+
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\maketitle 
+
+
+
+%\begin{keyword}
+%determinism, flaky tests, library testing, random testing,
+%specification mechanisms, test case reduction
+%\end{keyword}
+
+%\end{frontmatter}
+
+\input{introduction}
+\input{experiments}
+\input{relatedwork}
+\input{conclusions}
+
+\bibliographystyle{plain}
+\bibliography{bibliography,bibliography_ag,rahul}
+
+\end{document}
