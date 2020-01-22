@@ -10,19 +10,26 @@ PMD_warnings = 0
 Infer_warnings = 0
 N = 0.0
 
+spotbugs_file = open("all.spotbugs.killed.txt", 'w')
+PMD_file = open("all.PMD.killed.txt", 'w')
+Infer_file = open("all.Infer.killed.txt", 'w')
+
 with open("Java.csv") as javaResults:
     reader = csv.DictReader(javaResults)
     for row in reader:
         N += 1
         if row["spotbugs_killed"] == "1":
             spotbugs_killed += 1
+            spotbugs_file.write(row["Mutant"] + "\n")
             if row["PMD_killed"] == "0":
                 spotbugs_not_PMD += 1
         if row["PMD_killed"] == "1":
             PMD_killed += 1
+            PMD_file.write(row["Mutant"] + "\n")
             if row["spotbugs_killed"] == "0":
                 PMD_not_spotbugs += 1
         if row["Infer_killed"] == "1":
+            Infer_file.write(row["Mutant"] + "\n")            
             print(row)
             Infer_killed += 1
         try:
