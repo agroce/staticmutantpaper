@@ -1,12 +1,16 @@
 \section{Experimental Results: Comparison and Improvement of Static Analysis Tools}
 
-For each language, RQs:
+Our primary experimental results are a set of comparisons of tools using our method, for three languages: Solidity (the most popular language for smart contracts), Java, and Python.  We also use these results to answer a set of research questions that consider the utility of our method:
 
-RQ1:  actionable, novel differences for tool ranking?  in particular, does the rate of mutant detection differ from what would be expected by extrapolating from issue counts over original code; that is, is the tendency of mutants to represent faults/bad code useful, and avoids the problem of simply rewarding false positive-prone tools?
-RQ2:  tool overlaps identifiable?
-RQ3:  agrees with other sources of information?
-RQ4:  can identify improvements?
+\begin{itemize}
+\item {\bf RQ1:}  Does our approach produce actionable results?  That is, do raw mutation kills serve to distinguish tools from each other, or are all tools similar in terms of mutation detection capability?
+\item {\bf RQ2:}  Does our approach provide additional information beyond simply counting findings for the original, un-mutated analyzed code?  Do \emph{ratios} differ between programs, or does the number of mutants killed simply reflect the ``verbosity'' of each tool?
+\item {\bf RQ3:}  Do the rankings that raw kills and ratios establish agree with other sources of information about the effectiveness of the evaluated tools?  Can we confirm results from other evaluation methods, or informal opinion?
+\item {\bf RQ4:}  Do individual mutants, prioritized for ease of examination, allow us to identify classes of faults that different tools are good at/bad at?  Can we extend this information to improve tools by addressing identified weaknesses?
+  \end{itemize}
 
+In particular, we consider {\bf RQ2} to be of critical importance; if the mutant ratios for tools differ, then this is clear evidence that our hypothesis that the tendency of mutants to be faults, and to expect that mutated code will, by a sound and precise tool, be flagged as problematic more often than non-mutated code, holds.  This expectation that (some subset of the) mutants can serve as proxies for real, detectable faults is the core concept of our approach.
+  
 \subsection{Solidity Smart Contract Tools}
 
 \subsubsection{Smart Contracts and Smart Contract Static Analysis}
@@ -19,6 +23,50 @@ We analyzed three well-known tools for static analysis of Solidity smart contrac
 
 \subsubsection{Analysis Results}
 
+\begin{figure}
+  \includegraphics[width=\columnwidth]{solidity.png}
+  \caption{Mutants killed by Solidity static analysis tools.}
+  \label{fig:solidityvenn}
+\end{figure}
+
+\begin{table}
+  \begin{tabular}{l|r|r|r|r|r}
+    & \multicolumn{2}{|c|}{Findings} & \multicolumn{2}{|c|}{Mutation Score}  & Mutant \\
+    Tool & Mean & Median & Mean & Median & Ratio\\
+    \hline
+    \hline
+    Slither & 2.37 & 1.0 & 0.09 & 0.09 & 0.038 \\
+    \hline
+    SmartCheck & 1.89 & 1.0 & 0.05 & 0.05 & 0.026 \\
+    \hline
+    Securify & 24.65 & 17.0 & 0.03 & 0.02 &  0.001 \\
+    \hline
+  \end{tabular}
+  \caption{Solidity tools: number of findings and mutation scores over all contracts.}
+  \label{tab:scoresolidity}
+\end{table}
+
+\begin{table}
+  \begin{tabular}{l|r|r|r|r|r}
+    & & \multicolumn{2}{|c|}{} & \multicolumn{2}{|c}{Clean For All (3)} \\
+    & \# Clean & \multicolumn{2}{|c|}{Mutation Score} &  \multicolumn{2}{|c}{Mutation Score}\\
+    Tool & Contracts & Mean & Median & Mean & Median\\
+    \hline
+    \hline
+    Slither & 39 & 0.11 & 0.11 & 0.09 & 0.09 \\
+    \hline
+    SmartCheck & 27 & 0.03 & 0.01 & 0.03 & 0.00 \\
+    \hline
+    Securify & 5 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    \hline
+  \end{tabular}
+  \caption{Solidity tools: clean contract counts and mutation scores.}
+  \label{tab:cleansolidity}
+\end{table}
+
+
+Figure \ref{fig:solidityvenn} shows the mutants killed by the Solidity analysis tools.  Tables \ref{tab:scoresolidity} and \ref{tab:cleansolidity} provide numeric details of the results, including the \emph{ratio} for each tool, adjusting its mutation scores by its' general tendency to produce findings.  First, a user examining these results would suspect that Slither and SmartCheck are both useful tools, and should likely both be applied in a high-risk security-sensitive context like smart contract development.  Second, a user might suspect that the large number of findings produced, and smaller number of mutants killed, for Securify, mean that including Securify in the static analysis tool stable is a more difficult decision.  On the one hand, Securify does detect nearly as many mutants it alone can identify as SmartCheck.  The large number of findings, and very bad mutant ratio, however, lead us to suspect that many of these ``detected'' mutants are false positives (or, at least, that the problem is not the one Securify identifies).  Extracting the signal from Securify's noise will be difficult.  We also note that while running Slither and SmartCheck on all 46,769 valid mutants was relatively quick (it took about 8 days sequential compute time for Slither and 3 days for SmartCheck), Securify often required many hours to analyze a mutant, and frequently required a few days to analyze a mutant; the full analysis required over three months of compute time.
+
 We first compare the two tools that performed best.  Slither detected 2.37 mean issues over the 100 contracts, and found 39 contracts free of all issues.  Slither had a mean mutation score of 0.09 over all contracts, and 0.11 over clean (according to Slither) contracts.  SmartCheck detected 1.89 mean issues over the 100 contracts, but only found 27 contracts free of all issues.  The mean issue counts for the tools were not statistically significantly different ($p=0.34$).  SmartCheck had a mean mutation score of 0.05 over all contracts, and 0.03 over clean (according to SmartCheck) contracts.  The ratio between mean issues (Slither / SmartCheck) is 1.25, and the ratio of numbers of clean contracts is similar (1.44).  The mutation score ratio, however, is 1.8, suggesting that Slither is not out-scoring SmartCheck \emph{only} because it produces more false positives.  Slither detects 3,520 mutants not detected by SmartCheck, while SmartCheck only detects 1,629 mutants not detected by Slither (of these, 1,256 were also not detected by Securify) .  Over the 7 contracts that both tools mark as clean, Slither has a mean mutation score of 0.08, and SmartCheck has a mean mutation score of 0.03; the difference, even with only 7 contracts, is statistically significant by paired Wilcoxon test, at $p=0.03$.
 
 Securify was an outlier, compared to the other tools.  First, while running Slither and SmartCheck on all 46,769 valid mutants was relatively quick, Securify often required hours to analyze a contract; the full analysis required over a month.  Second, Securify identified a mean of 24.65 issues on the un-mutated contracts, with a median of 17 issues found; this was a significant difference in issue counts from either other tool, with $p<1.0^{-15}$ in both cases.  Despite this huge number of non-informational warnings for the original contracts, the mean mutation score was even worse than for SmartCheck, 0.03.  For contracts where Securify found no issues in the original contract, it \emph{never} detected any mutants. Securify, however, did detect 1,449 mutants not detected by Slither, 1,076 of which were not detected by SmartCheck.  On the other hand, given the ratio of issue counts compared to both tools is over 10.0, it is fairly likely many of these \emph{are} false positives, despite the probability mutants are actual faults.
@@ -28,6 +76,53 @@ Our recommendation, based on mutation analysis results, is that smart contract a
 \subsubsection{Improving Slither}
 
 \subsection{Java Tools}
+
+\subsubsection{Original Program Selection}
+
+\subsubsection{Analysis Results}
+
+\begin{figure}
+  \includegraphics[width=\columnwidth]{java.png}
+  \caption{Mutants killed by Java static analysis tools.}
+  \label{fig:javavenn}
+\end{figure}
+
+\begin{table}
+  \begin{tabular}{l|r|r|r|r|r}
+    & \multicolumn{2}{|c|}{Findings} & \multicolumn{2}{|c|}{Mutation Score}  & \\
+    Tool & Mean & Median & Mean & Median & Ratio\\
+    \hline
+    \hline
+    SpotBugs & 0.26 & 0.00 & 0.30 & 0.07 & 1.132 \\
+    \hline
+    PMD & 0.48 & 0.00 & 0.09 & 0.00 & 0.183 \\
+    \hline
+    Infer & 0.00 & 0.00 & 0.00 & 0.00 &  0.006 \\
+    \hline
+  \end{tabular}
+  \caption{Java tools: number of findings and mutation scores over all files.}
+  \label{tab:scorejava}
+\end{table}
+
+\begin{table}
+  \begin{tabular}{l|r|r|r|r|r}
+    & & \multicolumn{2}{|c|}{} & \multicolumn{2}{|c}{Clean For All (1,185)} \\
+    & \# Clean & \multicolumn{2}{|c|}{Mutation Score} &  \multicolumn{2}{|c}{Mutation Score}\\
+    Tool & Files & Mean & Median & Mean & Median\\
+    \hline
+    \hline
+    SpotBugs & 1,426 & 0.32 & 0.05 & 0.37 & 0.06 \\
+    \hline
+    PMD & 1,359 & 0.08 & 0.00 & 0.08 & 0.00 \\
+    \hline
+    Infer & 1,598 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    \hline
+  \end{tabular}
+  \caption{Java tools: clean file counts and mutation scores.}
+  \label{tab:cleanjava}
+\end{table}
+
+Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools.
 
 \subsection{Python Tools}
 
