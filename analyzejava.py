@@ -26,10 +26,13 @@ def readZero(v):
     except:
         return 0
 
+projects = set([])
+    
 with open("Java.csv") as javaResults:
     reader = csv.DictReader(javaResults)
     for row in reader:
         fname = row["Project"]+":"+row["File"]
+        projects.add(row["Project"])
         if fname not in files:
             files[fname] = {"mutants":0.0,"spotbugs_kills":0,"spotbugs_issues":readZero(row["Spotbug"]),
                                 "PMD_kills":0,"PMD_issues":readZero(row["PMD"]),
@@ -104,3 +107,5 @@ with open("Java.csv") as javaResults:
         print("CLEAN SCORES:", scipy.mean(cleanScores), scipy.median(cleanScores))
         print("#ALL CLEAN:", allCleanCount),
         print("ALL CLEAN SCORES:", scipy.mean(allCleanScores), scipy.median(allCleanScores))
+
+print(projects, len(projects))
