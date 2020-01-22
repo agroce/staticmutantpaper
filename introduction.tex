@@ -66,7 +66,9 @@ This paper offers the following contributions:
 \begin{itemize}
 \item We propose a differential approach to comparing static analysis tools based on the insight that program mutants provide an automated source of simple, easy-to-understand program changes that are likely faults.
 \item We propose a definition of mutant killing that works well in a static analysis context.
-\item We introduce a simple scheme for prioritizing mutants that helps users understand the results of analysis and guide efforts to improve, rather than simple compare, tools.
+\item We introduce a simple scheme for prioritizing mutants that helps users understand the results of analysis and guide efforts to improve, rather than simply compare, tools.
 \item We apply our method to an extensive, in-depth comparison of three Solidity smart contract analysis tools, and show how prioritization allowed us to easily identify (and build) three new detectors for the most effective of these tools.
 \item We further provide results for comparisons of popular Java and Python static analysis tools, showing the general usefulness of our methods, and giving a new picture of the comparative effectiveness of these tools.
 \end{itemize}
+
+The Solidity, Java, and Python case studies also serve to answer a set of research questions investigating the utility of our approach, and provide basic evidence that it provides actionable, non-obvious information that is otherwise difficult to produce.  While there are certainly limitations to using differential mutation analysis to compare (and extend) static analysis tools, the method scales to basing comparisons on large numbers of real software source files, but has some of the advantages of humans establishing ground truth for tool findings.
