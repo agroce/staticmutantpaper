@@ -100,13 +100,16 @@ Based on the differential mutation analysis, we identified three low-hanging fru
 
 \item {\bf Loss of precision due to divide before multiply:}  Solidity only supports integer types.  This means that performing division before multiplication can introduce rounding that is not present when the multiplication is performed first.  This is a fairly important problem, given the frequency with which Solidity code performs financial calculations where maximum precision is desired.  SmartCheck provides a detector for such precision losses \url{https://github.com/smartdec/smartcheck/blob/master/rule_descriptions/SOLIDITY_DIV_MUL/description_en.html}, which enabled it to detect mutants such as:
 
+\noindent\fbox{%
+    \parbox{\textwidth}{%
 \begin{code}
 0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.mutant.480.sol: 424contracts//0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.sol:650
         byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
  ==>  ...*...==>.../...
         byte char = byte(bytes32(uint(x) * 2 ** (8 / j)));
 \end{code}
-
+}
+}
 \end{enumerate}      
 
 All three of these detectors were submitted as PRs, vetted over an internal benchmark set of contracts used by the Slither developers to evaluate new detectors, and accepted for release in the public version of Slither.  All three detectors produce some true positives (actual problems, though not always exploitable) in benchmark contracts, have acceptably low false positive rates, and were deemed valuable enough to include as non-informational (medium severity) detectors.  The first mutants in prioritized rank exhibiting the issues, shown above, were the 2nd, 9th, and 12th non-statement-deletion mutants ranked for SmartCheck, out of over 800 such mutants.  Using our prioritization, it was possible to identify these issues by examining fewer than 20 unkilled mutants.  Without prioritization, on average a developer would have to look at more than 200, 80, and 400 mutants, respectively, to find instances of these problems.  
