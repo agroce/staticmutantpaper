@@ -16,6 +16,8 @@ In particular, we consider {\bf RQ2} to be of critical importance; if the mutant
 {\bf RQ4} addresses a concern briefly mentioned in the introduction:  it is possible that warnings for the original code interfere with our definition of detection.  The ideal case for our approach is when a tool report no findings for un-mutated code, and either reports a finding (kills the mutant) or not (does not kill it) when the mutant is introduced.  Chekam et al. showed that the ``clean program assumption'' for testing, the idea that coverage will be similar for faulty and fixed versions of a program, is a threat to the validity of investigations of the relationship between coverage and fault detection \cite{CleanProgram}, and we want to establish that this is unlikely to be the case for our approach.
 {\bf RQ5} and {\bf RQ6} receive only preliminary answers, for the smart contract tools.
 
+We used the Universal Mutator \cite{universalmutator,regexpMut}, which aggressively produces large numbers of mutants, to generate all mutants.  We will make available a repository containing our full raw results plus details on contracts and projects selected, for replication and further analysis, upon acceptance (to avoid breaking blinding).
+
 \subsection{Solidity Smart Contract Tools}
 
 \subsubsection{Smart Contracts and Smart Contract Static Analysis}
