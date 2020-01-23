@@ -91,12 +91,11 @@ For {\bf RQ4}, on the changes seen when restricting analysis to clean contracts,
 
 \begin{figure}
   {\scriptsize
-\begin{code}
-  0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.mutant.275.sol:
-  424contracts/0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.sol:249
-        if (!p.recipient.send(p.amount)) \{  // Make the payment
+\noindent \begin{code}
+ 0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.mutant.275.sol:
+ if (!p.recipient.send(p.amount)) \{  // Make the payment
  ==>          if (true) \{  // Make the payment
-        if (true) \{  // Make the payment
+ if (true) \{  // Make the payment
       \end{code}
       }
       \caption{Mutant showing {\bf Boolean constant misuse}.}
@@ -106,11 +105,10 @@ For {\bf RQ4}, on the changes seen when restricting analysis to clean contracts,
     \begin{figure}
       {\scriptsize
 \begin{code}
-  0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.mutant.311.sol:
-  424contracts/0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.sol:175
-        require(nextDiscountTTMTokenId6 >= 361 \&\& nextDiscountTTMTokenId6 <= 391);
+ 0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.mutant.311.sol:
+ require(nextDiscountTTMTokenId6 >= 361 \&\& nextDiscountTTMTokenId6 <= 391);
  ==>  ...361...==>...0...
-        require(nextDiscountTTMTokenId6 >= 0 \&\& nextDiscountTTMTokenId6 <= 391);
+ require(nextDiscountTTMTokenId6 >= 0 \&\& nextDiscountTTMTokenId6 <= 391);
       \end{code}
       }
       \caption{Mutant showing {\bf Type-based tautologies}.}
@@ -120,11 +118,10 @@ For {\bf RQ4}, on the changes seen when restricting analysis to clean contracts,
 \begin{figure}
   {\scriptsize
 \begin{code}
-  0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.mutant.480.sol:
-  424contracts/0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.sol:650
-        byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+ 0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.mutant.480.sol:
+ byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
  ==>  ...*...==>.../...
-        byte char = byte(bytes32(uint(x) * 2 ** (8 / j)));
+ byte char = byte(bytes32(uint(x) * 2 ** (8 / j)));
       \end{code}
       }
       \caption{Mutant showing {\bf Loss of precision}.}
@@ -159,6 +156,24 @@ It is hard to scale our efforts here to a larger experiment, since writing and s
 \subsubsection{Project Selection}
 
 \subsubsection{Analysis Results}
+
+Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools, and Tables \ref{tab:scorejava} and \ref{tab:cleanjava} provide numeric results for projects and clean projects, respectively.
+
+In terms of {\bf RQ1}, the raw results are clear:  SpotBugs finds vastly more uniquely killed mutants than the other tools, but PMD contributes a large number of its own unique detections, and clearly offers some independent utility.  Infer on the other hand, is only able to detect two mutants, but these are unique.
+
+{\bf RQ2} is also answered in the affirmative.  While the raw kills for SpotBugs are impressive, it also produced fewer findings for clean code, giving it an excellent mutant ratio, making its dominance even more clear.  PMD's performance was acceptable, and better than any of the Solidity tools (note that comparing ratios across languages is potentially invalid, but not obviously so).  Infer is confirmed as nearly useless, again.
+
+\begin{figure}
+  \url{https://stackoverflow.com/questions/4297014/what-are-the-differences-between-pmd-and-findbugs}
+  \url{https://www.sw-engineering-candies.com/blog-1/comparison-of-findbugs-pmd-and-checkstyle}
+  \url{https://www.reddit.com/r/java/comments/3i7w6n/checkstyle_vs_pmd_vs_findbugs_for_dummies_why/}
+\caption{Blog posts and forum threads discussing Java static analysis tools.}
+\label{fig:blog}
+\end{figure}
+
+For {\bf RQ3}, to our knowledge there is no academic comparison of these tools.  However, the user postings listed in Figure \ref{fig:blog}, plus personal communications with security analysts who use these tools (citation removed for now, due to potential to compromise blinding) supported some basic conclusions.  SpotBugs/FindBugs is indeed the best tool for finding bugs; PMD focuses more on stylistic issues and has a weaker semantic model.  Mutants are much more likely to be bugs than stylistic issues (they alter semantics, not code style, in almost all cases: deletion or constant/operator changes obviously have no style impact).  Infer is closer to a model checker focusing on resource leaks than a truly general-purpose tool, arguably.
+
+For {\bf RQ4} there were very few clean projects, but the mutation scores for Infer were unchanged, and for SpotBugs the mean mutation score improved and median mutation score was worse.  Again, we see no evidence that non-clean code is a source of significant degradation on mutation detection.
 
 \begin{figure}
   \includegraphics[width=\columnwidth]{java.png}
@@ -201,8 +216,6 @@ It is hard to scale our efforts here to a larger experiment, since writing and s
   \label{tab:cleanjava}
 \end{table}
 
-Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools.
-
 \subsection{Python Tools}
 
 167,511 mutants
@@ -212,6 +225,15 @@ Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools.
 \subsubsection{Project Selection}
 
 \subsubsection{Analysis Results}
+
+
+Figure \ref{fig:pythonvenn} shows the mutants killed by the Java analysis tools, and Tables \ref{tab:scorepython} and \ref{tab:cleanpython} provide numeric results for projects and clean projects, respectively.
+
+For {\bf RQ1}, Pylint and pyflakes both killed more than 15,000 mutants killed by no other tool; Pylint killed more mutants, but the relative difference was much smalller than in our Solidity or Java analysis.  It is clear both tools are well worth using, assuming these are not false positives.  Pyflakes' mutation score is lower than unique kills might suggest because it has almost no overlap with the other two tools.  It is doing something quite different than they are, apparently.
+
+The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes, in fact, and better than Pylint, because while it killed fewer mutants, it also produced fewer findings by far, overall.  PyChecker would be a good choice for quick and dirty analysis of code on the fly, perhaps, in that it had excellent mutation scores for some programs (hence a high mean) but is relatively ``quiet'' compared to the other tools.  However, its very low median mutation score is troubling; it may simply not work for some code.  A combination of pyflakes and Pylint seems safer, though adding the relatively low-findings PyChecker seems likely to have little cost.  For Python, we see that all of our measures are required to get a good picture of the tools.
+
+For {\bf RQ4} there were no clean projects for the known-to-be-aggressive Pylint.  Performance for the other two tools was worse on projects for which they were clean, again failing to support the possibility that our definition of killing a mutant under-reports detection for non-clean code.
 
 \begin{figure}
   \includegraphics[width=\columnwidth]{python.png}
