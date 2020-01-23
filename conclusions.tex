@@ -1,1 +1,28 @@
 \section{Conclusions and Future Work}
+
+In this paper, we showed that program mutants can be used as a proxy
+for real faults, to compare (and motivate improvements to) static
+analysis tools.  Mutants are attractive in that changing a mostly
+correct program usually introduces a bug into it; this is the basis of
+mutation testing, after all, and a large body of work supports the
+claim that at least 60-70\% of mutants are fault-inducing.   This
+means we can assume mutants are faulty, and escape the
+ground-truth/false positive problem that makes comparing static
+analysis tools so labor-intensive.  It cannot help with precision
+problems, directly, but combined with finding counts for un-mutated
+code, our approach can identify tools that detect mutants well,
+adjusted for their general tendency to flag any code as faulty.  We
+evaluated 9 popular static analysis tools, for Solidity smart contracts, Java,
+and Python, and offer advice to users of these tools.  We were also
+able to use our methods, plus a novel mutant prioritization scheme, to
+identify three useful new detectors for the Slither smart contract
+analyzer.
+
+As future work, we would like to further validate our approach and
+improve our admittedly \emph{ad hoc} mutant distance metric.  Allowing
+user feedback \cite{EndUserMistake,OnlyOracle}, or applying metric
+learning methods \cite{kulis2012metric} (particularly unsupervised
+learning \cite{scholkopf1998nonlinear,tipping1999probabilistic}) are
+the most obvious and interesting possibilites for a better metric.
+Finally, mutant prioritization should be applicable to improving
+software testing, as well \cite{groce2018verified}.

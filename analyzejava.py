@@ -28,6 +28,8 @@ def readZero(v):
 
 projects = set([])
 
+projectFiles = {}
+
 Mutant = 0
     
 with open("Java.csv") as javaResults:
@@ -37,11 +39,30 @@ with open("Java.csv") as javaResults:
         fname = row["Project"]
         projects.add(row["Project"])
         if fname not in files:
-            files[fname] = {"mutants":0.0,"spotbugs_kills":0,"spotbugs_issues":readZero(row["Spotbug"]),
-                                "PMD_kills":0,"PMD_issues":readZero(row["PMD"]),
-                                "Infer_kills":0,"Infer_issues":readZero(row["Infer"])}
+            projectFiles[fname] = []
+            files[fname] = {"mutants":0.0,
+                                "spotbugs_kills":0,"spotbugs_issues":0,
+                                "PMD_kills":0,"PMD_issues":0,
+                                "Infer_kills":0,"Infer_issues":0}
+        if row["File"] not in projectFiles[fname]:
+            projectFiles[fname].append(row["File"])
+            files[fname]["spotbugs_issues"] += readZero(row["Spotbug"])
+            files[fname]["PMD_issues"] += readZero(row["PMD"])
+            files[fname]["Infer_issues"] += readZero(row["Infer"])
         N += 1
         files[fname]["mutants"] += 1
+        if row["spotbugs_killed"] not in ["0", "1"]:
+            print("NO RESULT FOR SPOTBUGS")
+        if row["PMD_killed"] not in ["0", "1"]:
+            print("NO RESULT FOR PMD")
+        try:
+            x = int(row["Spotbug"])
+        except:
+            print("NO ISSUES FOR SPOTBUG", row["spotbugs_killed"])
+        try:
+            x = int(row["PMD"])
+        except:
+            print("NO ISSUES FOR PMD")            
         if row["spotbugs_killed"] == "1":
             files[fname]["spotbugs_kills"] += 1
             spotbugs_killed += 1

@@ -1,2 +1,87 @@
 \section{Prioritizing Mutants}
 \label{sec:prioritizing}
+
+One goal of our approach is to make it easy for tool developers to
+examine cases where one tool kills a mutant and another fails to, in
+order to identify patterns for new detectors.  Dedicated developers may also
+simple want to scan all mutants their tool does not kill, for the same
+purpose, analogous to what Groce et al. have proposed for automated
+verification and testing \cite{groce2015verified,groce2018verified}.
+Security analysts and other expert users who are not developers may
+also wish to do this, to better understand details of tool strengths
+and weaknesses.
+
+Unfortunately the full list of unkilled mutants, or differentially
+unkilled mutants, is likely to be both large and highly redundant.  In
+our results below, only one of 9 tools we examined killed fewer than
+1,000 mutants it alone detected.  Any cross-tool comparison is thus
+likely to involve hundreds or thousands of mutants.
+
+The problem of identifying unique ``faults'' (tool weaknesses) in this
+situation is very similar to the \emph{fuzzer taming} problem in
+software testing, as defined by Chen et al. \cite{PLDI13}: ``Given a
+potentially large collection of test cases, each of which triggers a
+bug, rank them in such a way that test cases triggering distinct bugs
+are early in the list.'' \cite{PLDI13}.  Their solution was
+to use Gonzalez' Furthest-Point-First \cite{Gonzalez} (FPF) algorithm
+to \emph{rank} test cases so that users can examine very different
+test cases as quickly as possible.  An
+FPF ranking requires a distance metric $d$, and ranks items so that
+dissimilar ones appear earlier.
+The hypothesis of Chen et al. was that dissimilar tests, by a
+well-chosen metric, will also fail due to different faults.  FPF is a
+greedy algorithm that proceeds by repeatedly adding the item with the
+\emph{maximum minimum distance to all previously ranked items}. Given an
+initial seed item $r_0$, a set $S$ of items to rank, and a distance
+metric $d$, FPF computes $r_i$ as
+$s \in S: \forall s' \in S: min_{ j < i}(d(s,r_j)) \geq min_{j <
+  i}(d(s',r_j))$.  The condition on $s$ is obviously true when
+$s = s'$, or when $s' = r_j$ for some $j < i$; the other cases for
+$s'$ force selection of \emph{some}
+max-min-distance $s$.
+
+In order to apply FPF ranking to examining mutants, we implemented a
+simple, somewhat \emph{ad hoc} distance metric and FPF ranker in the
+Universal Mutator \cite{universalmutator} tool.  Our metric $d$ is
+the sum of a set of measurements.  First, it adds a similarity
+ratio based on Levenshtein distance \cite{lev} for (1) the \emph{changes} (Levenshtein edits) from
+the original source code elements to
+the two mutants,  (2) the two original source code elements changed (in
+general, lines), and (3) the actual output mutant code.  These are
+weighted with multipliers of 5.0, 0.1, and 0.1, respectively; the type
+of change (mutation operator, roughly) dominates this part of the
+distance, because it best describes ``what the mutant did''; however,
+because many mutants will have the same change (e.g., changing {\tt +}
+to {\tt -}, the other ratios also often matter.  The Python
+{\tt Levenshtein} library's similarity ratio is used, as it is based
+on true minimal string edits; it reports similarity ratios between 0.0
+and 1.0.
+
+Our metric also incorporates a measure of the distance in the source
+code between the locations of two mutants.  If the mutants are to
+different files, this adds 0.5 to the distance; it also adds 0.25
+times the number of source lines separating the two mutants if they
+are in the same file, divided by 10, but caps the amount added at
+0.25.  The full metric, therefore is:
+
+$$ 5.0 \times r(\mathit{edit}_1, \mathit{edit}_2) +$$
+$$0.1 \times r(\mathit{source}_1, \mathit{source}_2) +$$
+$$0.1 \times r(\mathit{mutant}_1, \mathit{mutant}_2) +$$
+$$0.5 \times \mathit{different\_files} +$$
+$$max(0.25, \frac{\mathit{line\_distance}(\mathit{mutant}_1, \mathit{mutant}_2)}{10})$$
+
+\noindent Where $r$ is a Levenshtein-based string similarity ratio,
+and $\mathit{line\_distance}$ is the distance in a source file between
+two locations, in lines (and zero if the locations are in different
+source files).
+
+We do not claim this is an optimal, or even tuned, metric.  It
+provided useful results for a different problem, ranking mutants in an
+effort similar to that of Groce et
+al. \cite{groce2015verified,groce2018verified} to examine unkilled
+mutants for a smart contract library tested using the Echidna fuzzer,
+and we simply adopted it for our differential mutation analysis.
+Devising a better metric is left as future work, we only wish to show
+that even a hastily-devised and somewhat arbitrary metric provides
+considerable advantage over wading through an un-ordered list of
+mutants, and introduce the idea of using FPF for mutants, not just tests.
