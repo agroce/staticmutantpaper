@@ -17,9 +17,11 @@ In particular, we consider {\bf RQ2} to be of critical importance; if the mutant
 
 Smart contracts are autonomous code instruments, usually operating on a blockchain, that often have critical responsibilities such as facilitating and verifying (large) financial services transactions, tracking high-value physical goods or intellectual property, or even controlling ``decentralized organizations'' with multifarious aspects.  Security and correctness are thus critical in the smart contract domain, and static analysis is a key way to ensure allocation of high-value resources is not compromised.  The most popular smart contract platform, by far, is the Ethereum blockchain, and the Solidity smart contract language \cite{buterin2013whitepaper,wood2014yellow}; the Ethereum cryptocurrency has a market capitalization as we write of over \$15 billion dollars, largely fueled by interest in the smart contract functionality.  Ethereum contracts have been the targets of widely publicized attacks, with large financial consequences  \cite{spank,DAO}.   A recent paper examining results from 23 professional security audits of Solidity contracts argues that effective static analysis is a major key to avoiding such disasters in the future \cite{FC20}.
 
-We analyzed three well-known tools for static analysis of Solidity smart contracts: Slither \cite{slither}, SmartCheck \cite{smartcheck}, and Securify \cite{Securify}.
+\subsubsection{Static Analysis Tools Compared}
 
-\subsubsection{Original Program Selection}
+We analyzed three well-known tools for static analysis of Solidity smart contracts: Slither \cite{slither}, SmartCheck \cite{smartcheck}, and Securify \cite{Securify}. 
+
+\subsubsection{Smart Contract Selection}
 
 We could have used a set of high-transaction contracts, or known-important contracts to validate our approach.  However, we knew that one of our goals in the Solidity experiments was to actually improve a mutation analysis tool, and the developers of the static analysis tools use exactly such benchmarks to validate their tools.  Basing our improvements on mutants of the contracts used for evaluation of proposed detectors would introduce a serious bias in our favor: we would be more likely to produce detectors that would have true positives and few false positives on the benchmark contracts.  We therefore instead selected 100 random contracts for which EtherScan (\url{https://etherscan.io/}) has source code, and used this (quite arbitrary) set of contracts from the actual blockchain to compare tools and identify opportunities for improvement.
 
@@ -77,39 +79,58 @@ Our recommendation, based on mutation analysis results, is that smart contract a
 
 \subsubsection{Improving Slither {\bf (RQ 4)}}
 
-Based on the differential mutation analysis, we identified three low-hanging fruit to improve the performance of Slither.  The process was simple.  First, we produced a list of all mutants killed by either SmartCheck or Securify, but not killed by Slither.  We then applied the prioritization method based on the FPF algorithm and the distance metric described in Section \ref{sec:prioritizing}, and examined the mutants in rank order.  Many of the mutants were difficult to identify as true or false positives, absent context.  Some opportunities for enhancement were clear, but seemed likely to require considerable effort to implement without producing a large number of false positives.  For example, Securify often detected when an ERC20 token contract's guard preventing making the special 0x0 address the owner of a contract was removed, and issued the error {\tt Violation for MissingInputValidation}. Detecting such missing guards is probably useful, but formulating a way to do it without producing false positives is non-trivial.  We wanted to show that mutants could identify \emph{useful} but \emph{easy to implement} missing detectors.  Examining the first few mutants, we identified three such, based on mutants killed by either SmartCheck or Securify, or both:
 
-\begin{enumerate}
-\item {\bf Boolean constant misuse:}  This detector flags code like {\tt if (true)} or {\tt g(b || true)} (where {\tt g} is a function that takes a Boolean input).  Constant-valued conditionals tend to indicate debugging efforts that have persisted into production code, or other faults; there are almost no circumstances where a conditional should not vary with state or input.  This detector is actually split into two detectors, one for this serious issue, and an informational/stylistic detector that notes that code such as {\tt if (x == true)}, while semantically harmless, is difficult to read.  This problem was easily identified from cases such as this mutant, killed by SmartCheck but not Slither:
-
+\begin{figure}
+  {\scriptsize
 \begin{code}
-0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.mutant.275.sol: 424contracts//0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.sol:249
+  0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.mutant.275.sol:
+  424contracts/0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.sol:249
         if (!p.recipient.send(p.amount)) \{  // Make the payment
  ==>          if (true) \{  // Make the payment
         if (true) \{  // Make the payment
-\end{code}
+      \end{code}
+      }
+      \caption{Mutant showing {\bf Boolean constant misuse}.}
+      \label{fig:boolean}
+    \end{figure}
 
-\item {\bf Type-based tautologies:}  A type-based tautology is again a case where a Boolean expression has a constant value, but this is not due to misuse of a Boolean constant, but is instead due to the \emph{types} in a comparison.  For example, if {\tt x} is an unsigned integer type, the comparison {\tt x >= 0} is always true and {\tt x < 0} is always false.  This detector is a generalization of the SmartCheck detector \url{https://github.com/smartdec/smartcheck/blob/master/rule_descriptions/SOLIDITY_UINT_CANT_BE_NEGATIVE/description_en.html}, modified to actually compute the ranges of types and identify more general instances of tautological comparisons, e.g. {\tt y < 512} where {\tt y}'s type is {\tt int8}.  Again, the problem was easily identified by a mutants killed by SmartCheck but not Slither such as:
-
+    \begin{figure}
+      {\scriptsize
 \begin{code}
-0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.mutant.311.sol: 424contracts//0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.sol:175
+  0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.mutant.311.sol:
+  424contracts/0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.sol:175
         require(nextDiscountTTMTokenId6 >= 361 \&\& nextDiscountTTMTokenId6 <= 391);
  ==>  ...361...==>...0...
         require(nextDiscountTTMTokenId6 >= 0 \&\& nextDiscountTTMTokenId6 <= 391);
-\end{code}
+      \end{code}
+      }
+      \caption{Mutant showing {\bf Type-based tautologies}.}
+      \label{fig:tautology}      
+\end{figure}
 
-\item {\bf Loss of precision due to divide before multiply:}  Solidity only supports integer types.  This means that performing division before multiplication can introduce rounding that is not present when the multiplication is performed first.  This is a fairly important problem, given the frequency with which Solidity code performs financial calculations where maximum precision is desired.  SmartCheck provides a detector for such precision losses \url{https://github.com/smartdec/smartcheck/blob/master/rule_descriptions/SOLIDITY_DIV_MUL/description_en.html}, which enabled it to detect mutants such as:
-
-\noindent\fbox{%
-    \parbox{\textwidth}{%
+\begin{figure}
+  {\scriptsize
 \begin{code}
-0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.mutant.480.sol: 424contracts//0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.sol:650
+  0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.mutant.480.sol:
+  424contracts/0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.sol:650
         byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
  ==>  ...*...==>.../...
         byte char = byte(bytes32(uint(x) * 2 ** (8 / j)));
-\end{code}
-}
-}
+      \end{code}
+      }
+      \caption{Mutant showing {\bf Loss of precision}.}
+      \label{fig:divmul}            
+      \end{figure}
+
+
+Based on the differential mutation analysis, we identified three low-hanging fruit to improve the performance of Slither.  The process was simple.  First, we produced a list of all mutants killed by either SmartCheck or Securify, but not killed by Slither.  We then applied the prioritization method based on the FPF algorithm and the distance metric described in Section \ref{sec:prioritizing}, and examined the mutants in rank order.  Many of the mutants were difficult to identify as true or false positives, absent context.  Some opportunities for enhancement were clear, but seemed likely to require considerable effort to implement without producing a large number of false positives.  For example, Securify often detected when an ERC20 token contract's guard preventing making the special 0x0 address the owner of a contract was removed, and issued the error {\tt Violation for MissingInputValidation}. Detecting such missing guards is probably useful, but formulating a way to do it without producing false positives is non-trivial.  We wanted to show that mutants could identify \emph{useful} but \emph{easy to implement} missing detectors.  Examining the first few mutants, we identified three such, based on mutants killed by either SmartCheck or Securify, or both:
+
+\begin{enumerate}
+\item {\bf Boolean constant misuse:}  This detector flags code like {\tt if (true)} or {\tt g(b || true)} (where {\tt g} is a function that takes a Boolean input).  Constant-valued conditionals tend to indicate debugging efforts that have persisted into production code, or other faults; there are almost no circumstances where a conditional should not vary with state or input.  This detector is actually split into two detectors, one for this serious issue, and an informational/stylistic detector that notes that code such as {\tt if (x == true)}, while semantically harmless, is difficult to read.  This problem was easily identified from cases such as the mutant in Figure \ref{fig:boolean}, killed by SmartCheck but not Slither:
+
+\item {\bf Type-based tautologies:}  A type-based tautology is again a case where a Boolean expression has a constant value, but this is not due to misuse of a Boolean constant, but is instead due to the \emph{types} in a comparison.  For example, if {\tt x} is an unsigned integer type, the comparison {\tt x >= 0} is always true and {\tt x < 0} is always false.  This detector is a generalization of the SmartCheck detector \url{https://github.com/smartdec/smartcheck/blob/master/rule\_descriptions/SOLIDITY\_UINT\_CANT\_BE\_NEGATIVE/description\_en.html}, modified to actually compute the ranges of types and identify more general instances of tautological comparisons, e.g. {\tt y < 512} where {\tt y}'s type is {\tt int8}.  Again, the problem was easily identified by mutants killed by SmartCheck but not Slither such as the one in Figure \ref{fig:tautology}.
+
+\item {\bf Loss of precision:}  Solidity only supports integer types.  This means that performing division before multiplication can introduce rounding that is not present when the multiplication is performed first.  This is a fairly important problem, given the frequency with which Solidity code performs financial calculations where maximum precision is desired.  SmartCheck provides a detector for such precision losses \url{https://github.com/smartdec/smartcheck/blob/master/rule\_descriptions/SOLIDITY\_DIV\_MUL/description\_en.html}, which enabled it to detect mutants such as the one shown in Figure\ref{fig:divmul}.
 \end{enumerate}      
 
 All three of these detectors were submitted as PRs, vetted over an internal benchmark set of contracts used by the Slither developers to evaluate new detectors, and accepted for release in the public version of Slither.  All three detectors produce some true positives (actual problems, though not always exploitable) in benchmark contracts, have acceptably low false positive rates, and were deemed valuable enough to include as non-informational (medium severity) detectors.  The first mutants in prioritized rank exhibiting the issues, shown above, were the 2nd, 9th, and 12th non-statement-deletion mutants ranked for SmartCheck, out of over 800 such mutants.  Using our prioritization, it was possible to identify these issues by examining fewer than 20 unkilled mutants.  Without prioritization, on average a developer would have to look at more than 200, 80, and 400 mutants, respectively, to find instances of these problems.  
@@ -120,11 +141,11 @@ Examining the first 100 mutants in the unprioritized lists for SmartCheck and Se
 
 It is hard to scale our efforts here to a larger experiment, since writing and submitting changes to static analysis tools is always going to be a fairly onerous task, but we believe that our successful addition of new detectors, and the ease of identifying good candidate detectors using mutant prioritization supports a limited affirmative answer to {\bf RQ4}.
 
-
-
 \subsection{Java Tools}
 
-\subsubsection{Original Program Selection}
+\subsubsection{Static Analysis Tools Compared}
+
+\subsubsection{Project Selection}
 
 \subsubsection{Analysis Results}
 
@@ -172,5 +193,52 @@ It is hard to scale our efforts here to a larger experiment, since writing and s
 Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools.
 
 \subsection{Python Tools}
+
+\subsubsection{Static Analysis Tools Compared}
+
+\subsubsection{Project Selection}
+
+\subsubsection{Analysis Results}
+
+\begin{figure}
+  \includegraphics[width=\columnwidth]{python.png}
+  \caption{Mutants killed by Python static analysis tools.}
+  \label{fig:pythonvenn}
+\end{figure}
+
+\begin{table}
+  \begin{tabular}{l|r|r|r|r|r}
+    & \multicolumn{2}{|c|}{Findings} & \multicolumn{2}{|c|}{Mutation Score}  & Mutant \\
+    Tool & Mean & Median & Mean & Median & Ratio\\
+    \hline
+    \hline
+    Pylint & 2.24 & 1.00 & 0.22 & 0.20 & 0.097 \\
+    \hline
+    pyflakes & 2.4 & 1.00 & 0.03 & 0.00 & 0.012 \\
+    \hline
+    PyChecker & 0.56& 0.00 & 0.10 & 0.00 &  0.183 \\
+    \hline
+  \end{tabular}
+  \caption{Python tools: number of findings and mutation scores over all projects.}
+  \label{tab:scorepython}
+\end{table}
+
+\begin{table}
+  \begin{tabular}{l|r|r|r}
+    & & \multicolumn{2}{|c|}{} \\
+    & \# Clean & \multicolumn{2}{|c|}{Mutation Score} \\
+    Tool & Projects & Mean & Median \\
+    \hline
+    \hline
+    Pylint & 0 & N/A & N/A \\
+    \hline
+    pyflakes & 12 & 0.02 & 0.00 \\
+    \hline
+    PyChecker & 21& 0.01 & 0.00 \\
+    \hline
+  \end{tabular}
+  \caption{Python tools: clean project counts and mutation scores.}
+  \label{tab:cleanpython}
+\end{table}
 
 \subsection{Threats to Validity}
