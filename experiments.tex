@@ -143,6 +143,8 @@ It is hard to scale our efforts here to a larger experiment, since writing and s
 
 \subsection{Java Tools}
 
+70,825 mutants
+
 \subsubsection{Static Analysis Tools Compared}
 
 \subsubsection{Project Selection}
@@ -161,38 +163,40 @@ It is hard to scale our efforts here to a larger experiment, since writing and s
     Tool & Mean & Median & Mean & Median & Ratio\\
     \hline
     \hline
-    SpotBugs & 0.26 & 0.00 & 0.30 & 0.07 & 1.132 \\
+    SpotBugs & 0.47 & 0.00 & 0.37 & 0.21 & 0.7847 \\
     \hline
-    PMD & 0.48 & 0.00 & 0.09 & 0.00 & 0.183 \\
+    PMD & 1.27 & 0.00 & 0.07 & 0.07 & 0.0562 \\
     \hline
-    Infer & 0.00 & 0.00 & 0.00 & 0.00 &  0.006 \\
+    Infer & 0.07 & 0.00 & 0.00 & 0.00 &  0.0002 \\
     \hline
   \end{tabular}
-  \caption{Java tools: number of findings and mutation scores over all files.}
+  \caption{Java tools: number of findings and mutation scores over all projects.}
   \label{tab:scorejava}
 \end{table}
 
 \begin{table}
   \begin{tabular}{l|r|r|r|r|r}
-    & & \multicolumn{2}{|c|}{} & \multicolumn{2}{|c}{Clean For All (1,185)} \\
+    & & \multicolumn{2}{|c|}{} & \multicolumn{2}{|c}{Clean For All (10)} \\
     & \# Clean & \multicolumn{2}{|c|}{Mutation Score} &  \multicolumn{2}{|c}{Mutation Score}\\
-    Tool & Files & Mean & Median & Mean & Median\\
+    Tool & Projects & Mean & Median & Mean & Median\\
     \hline
     \hline
-    SpotBugs & 1,426 & 0.32 & 0.05 & 0.37 & 0.06 \\
+    SpotBugs & 12 & 0.42 & 0.46 & 0.44 & 0.46 \\
     \hline
-    PMD & 1,359 & 0.08 & 0.00 & 0.08 & 0.00 \\
+    PMD & 11 & 0.07 & 0.07 & 0.07 & 0.07 \\
     \hline
-    Infer & 1,598 & 0.00 & 0.00 & 0.00 & 0.00 \\
+    Infer & 14 & 0.00 & 0.00 & 0.00 & 0.00 \\
     \hline
   \end{tabular}
-  \caption{Java tools: clean file counts and mutation scores.}
+  \caption{Java tools: clean project counts and mutation scores.}
   \label{tab:cleanjava}
 \end{table}
 
 Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools.
 
 \subsection{Python Tools}
+
+167,511 mutants
 
 \subsubsection{Static Analysis Tools Compared}
 

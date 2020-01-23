@@ -112,3 +112,4 @@ with open("Python.csv") as javaResults:
         print("ALL CLEAN SCORES:", scipy.mean(allCleanScores), scipy.median(allCleanScores))
 
 print(projects, len(projects))
+print(Mutant-1)
