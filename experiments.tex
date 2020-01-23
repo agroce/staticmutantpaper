@@ -233,6 +233,18 @@ For {\bf RQ1}, Pylint and pyflakes both killed more than 15,000 mutants killed b
 
 The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes, in fact, and better than Pylint, because while it killed fewer mutants, it also produced fewer findings by far, overall.  PyChecker would be a good choice for quick and dirty analysis of code on the fly, perhaps, in that it had excellent mutation scores for some programs (hence a high mean) but is relatively ``quiet'' compared to the other tools.  However, its very low median mutation score is troubling; it may simply not work for some code.  A combination of pyflakes and Pylint seems safer, though adding the relatively low-findings PyChecker seems likely to have little cost.  For Python, we see that all of our measures are required to get a good picture of the tools.
 
+\begin{figure}
+  \url{https://stackoverflow.com/questions/1428872/pylint-pychecker-or-pyflakes}
+  \url{https://www.reddit.com/r/Python/comments/ii3gm/experience_with_pylint_pychecker_pyflakes/}
+  \url{https://www.slant.co/versus/12630/12631/~pylint_vs_pyflakes}
+  \url{https://news.ycombinator.com/item?id=12748885}
+  \url{https://doughellmann.com/blog/2008/03/01/static-code-analizers-for-python/}
+\caption{Blog posts and forum threads discussing Python static analysis tools.}
+\label{fig:blogpython}
+\end{figure}
+
+For {\bf RQ3}, there were again no academic comparisons we could find.  However, opinions on the web were quite common (see Figure \ref{fig:blogpython} lists ones we examined.  It is hard to summarize the overall opinion here, since it ranges.  There is probably general agreement that PyChecker is old and maybe less useful, but also terse and sometimes helpful.  Pylint is the most recommended tool, and the general complaint that it is too picky was mitigated in our results by turning off clearly informative-only findings; users not configuring Pylint will probably see even more killed mutants, but likely a worse mutant ratio because mutants tend to introduce non-stylistic problems.  Pyflakes is well liked, and supposedly less verbose than Pylint; we did not see this, but that may be because pyflakes aims to focus on ``actual bugs'' so it is equally verbose for mutants, which are likely to be actual bugs.
+
 For {\bf RQ4} there were no clean projects for the known-to-be-aggressive Pylint.  Performance for the other two tools was worse on projects for which they were clean, again failing to support the possibility that our definition of killing a mutant under-reports detection for non-clean code.
 
 \begin{figure}
