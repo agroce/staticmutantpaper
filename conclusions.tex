@@ -8,12 +8,17 @@ mutation testing, after all, and a large body of work supports the
 claim that at least 60-70\% of mutants are fault-inducing.   This
 means we can assume mutants are faulty, and escape the
 ground-truth/false positive problem that makes comparing static
-analysis tools so labor-intensive.  It cannot help with precision
+analysis tools so labor-intensive.  Our approach cannot identify precision
 problems, directly, but combined with finding counts for un-mutated
 code, our approach can identify tools that detect mutants well,
-adjusted for their general tendency to flag any code as faulty.  We
+adjusted for their general tendency to flag any code as faulty, and
+thus identify imprecise tools.  We
 evaluated 9 popular static analysis tools, for Solidity smart contracts, Java,
-and Python, and offer advice to users of these tools.  For Solidity,
+and Python, and offer advice to users of these tools.  Our mutation
+results strongly confirm the wisdom of using multiple tools; with the
+exception of one Java tool, all tools we investigated uniquely
+detected over 1,000 mutants, and for Java and Python there were no
+mutants detected by all tools. For Solidity,
 academic research evaluations of the tools generally agreed strongly
 with our conclusions, but lacked the detail mutant analysis contributed.
 We were also able to use our methods, plus a novel mutant prioritization scheme, to
@@ -25,6 +30,6 @@ improve our admittedly \emph{ad hoc} mutant distance metric.  Allowing
 user feedback \cite{EndUserMistake,OnlyOracle}, or applying metric
 learning methods \cite{kulis2012metric} (particularly unsupervised
 learning \cite{scholkopf1998nonlinear,tipping1999probabilistic}) are
-the most obvious and interesting possibilites for a better metric.
+the most obvious and interesting possibilities for a better metric.
 Finally, mutant prioritization should be applicable to improving
 software testing, as well \cite{groce2018verified}.
