@@ -24,7 +24,7 @@ It is the combination of differential comparison and mutation that is key.  Diff
 We can quantitatively express the relationship between detecting mutants and findings for the original program.  Since we are comparing over the same program or set of programs, we simply divide the mean \emph{mutation score} ($\frac{|\mathit{killed}||}{|\mathit{mutants}|}$, the ratio of killed mutants to all mutants) by the mean number of findings.  This \emph {mutant ratio} tells us about the ability of a tool to produce findings \emph{for mutants}, relative to its tendency to produce findings in general (per line of code, per source file, etc.).  If a tool has a tendency to produce large numbers of findings (compared to other tools), and this is paired with a tendency to detect most mutants, then the tool will not be penalized for producing many findings.  Assuming that real faults are relatively rare in the original, un-mutated code, the best result (and best ratio score) will be for a tool that produces comparatively few findings for un-mutated code, but detects a larger portion of mutants than other tools; the worst result will be a tool that produces lots of findings, but detects few mutants.  We will actually see some examples of the worst case in our results for real tools.
 
 \begin{figure}
-  \includegraphics[width=0.7\columnwidth]{example.png}
+  \includegraphics[width=0.5\columnwidth]{example.png}
   \caption{Mutants killed by three static analysis tools.}
   \label{fig:examplevenn}
 \end{figure}
