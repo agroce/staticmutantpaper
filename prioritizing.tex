@@ -75,8 +75,8 @@ and $\mathit{line\_distance}$ is the distance in a source file between
 two locations, in lines (and zero if the locations are in different
 source files).
 
-We do not claim this is an optimal, or even tuned, metric; in the long run, it may be completely replaced.  It did
-provide useful results for a different problem, ranking mutants in an
+We do not claim this is an optimal, or even tuned, metric; in the long run, it even may be completely replaced.  One element that will likely remain is the focus on source code, rather than bytecode; static analysis tools generally analyze source, and some even work for code that does not compile.  The metric we use
+provided useful results for a different problem, ranking mutants in an
 effort similar to that of Groce et
 al. \cite{groce2015verified,groce2018verified} to examine unkilled
 mutants for a smart contract library tested using the Echidna fuzzer \cite{echidna-code},
@@ -84,4 +84,4 @@ and we simply adopted it for our differential mutation analysis.
 Devising a better metric is left as future work, we only wish to show
 that even a hastily-devised and somewhat arbitrary metric provides
 considerable advantage over wading through an un-ordered list of
-mutants, and introduce the idea of using FPF for mutants, not just tests.
+mutants, and introduce the idea of using FPF for mutants, not just for tests: FPF is useful for failures in general, however discovered.
