@@ -31,12 +31,31 @@ projects = set([])
 projectFiles = {}
 
 Mutant = 0
-    
+
+spotbugsFailed = 0
+PMDFailed = 0
+InferFailed = 0
+
+totalFiles = set([])
+failFiles = set([])
+failProjects = set([])
+
 with open("Java.csv") as javaResults:
     reader = csv.DictReader(javaResults)
     for row in reader:
+        #if row["Spotbug"] == "-1":
+        #    continue
         Mutant += 1
         fname = row["Project"]
+        totalFiles.add(row["Project"] + ":" + row["File"])
+        if row["Spotbug"] == "-1":
+            spotbugsFailed += 1
+            failFiles.add(row["Project"] + ":" + row["File"])
+            failProjects.add(row["Project"])
+        if row["PMD"] == "-1":
+            PMDFailed += 1
+        if row["Infer"] == "-1":
+            InferFailed += 1
         projects.add(row["Project"])
         if fname not in files:
             projectFiles[fname] = []
@@ -63,13 +82,13 @@ with open("Java.csv") as javaResults:
             x = int(row["PMD"])
         except:
             print("NO ISSUES FOR PMD")            
-        if row["spotbugs_killed"] == "1":
+        if row["spotbugs_killed"] == "1" and row["Spotbug"] != "-1":
             files[fname]["spotbugs_kills"] += 1
             spotbugs_killed += 1
             spotbugs_file.write(row["Mutant"] + "\n")
             if row["PMD_killed"] == "0":
                 spotbugs_not_PMD += 1
-        if row["PMD_killed"] == "1":
+        if row["PMD_killed"] == "1" and row["PMD"] != "-1":
             files[fname]["PMD_kills"] += 1
             PMD_killed += 1
             PMD_file.write(row["Mutant"] + "\n")
@@ -78,7 +97,6 @@ with open("Java.csv") as javaResults:
         if row["Infer_killed"] == "1":
             files[fname]["Infer_kills"] += 1            
             Infer_file.write(row["Mutant"] + "\n")            
-            print(row)
             Infer_killed += 1
         try:
             spotbugs_warnings += int(row["Spotbug"])
@@ -134,3 +152,17 @@ with open("Java.csv") as javaResults:
 
 print(projects, len(projects))
 print(Mutant-1)
+
+for f in files:
+    rate = files[f]["spotbugs_kills"]/files[f]["mutants"]
+    if rate > 0.4:
+        print("PROJECT:", f, files[f]["mutants"], files[f]["spotbugs_kills"], files[f]["spotbugs_kills"]/files[f]["mutants"])
+
+
+print("SPOTBUGS FAILED:", spotbugsFailed)
+print("PMD FAILED:", PMDFailed)
+print("Infer FAILED:", InferFailed)
+
+
+print(len(failFiles), len(totalFiles), float(len(failFiles))/len(totalFiles))
+print(len(failProjects))

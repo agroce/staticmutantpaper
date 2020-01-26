@@ -151,11 +151,11 @@ It is hard to scale our efforts here to a larger experiment, since writing and s
 
 \subsubsection{Static Analysis Tools Compared}
 
-For Java, we again compared three tools.  SpotBugs (\url{https://spotbugs.github.io/}) is the ``spiritual successor'' of FindBugs \cite{FindBugs,CompareJavaTools}.  PMD (\url{https://pmd.github.io/}) \cite{CompareJavaTools} is an extensible cross-language static code analyzer.  FaceBook's Infer (\url{https://fbinfer.com/}) \cite{Infer} focuses on diff-related detection of serious errors (concurrency, memory safety, and information flow) and aims to scale to very large code bases.
+For Java, we again compared three tools.  SpotBugs (\url{https://spotbugs.github.io/}) is the ``spiritual successor'' of FindBugs \cite{FindBugs,CompareJavaTools}.  PMD (\url{https://pmd.github.io/}) \cite{CompareJavaTools} is an extensible cross-language static code analyzer.  FaceBook's Infer (\url{https://fbinfer.com/}) \cite{Infer} focuses on diff-related detection of serious errors (concurrency, memory safety, and information flow).
 
 \subsubsection{Project Selection}
 
-For Java and Python, we did not have to worry about invalidating tool improvements by basing our results on benchmark code.  We therefore aimed to use realistic, important source code.  We selected top GitHub projects (defined by number of stars) for each language, and removed projects with fewer than 5 developers or less than six months of commit history (as well as projects that did not build).  For Java, we analyzed the top 15 projects satisfying our criteria, with a maximum of 623,355 LOC and a minimum of 3,957 LOC, and a total size of 1.8 million LOC.  The Java compiler rejected a large number of the generated mutants, leaving us with just over 70,000 mutants to analyze, ranging from 136 to 10,016 per project.
+For Java and Python, we did not have to worry about invalidating tool improvements by basing our results on benchmark code.  We therefore aimed to use realistic, important source code.  We selected top GitHub projects (defined by number of stars) for each language, and removed projects with fewer than 5 developers or less than six months of commit history (as well as projects that did not build).  For Java, we analyzed the top 15 projects satisfying our criteria, with a maximum of 623,355 LOC and a minimum of 3,957 LOC, and a total size of 1.8 million LOC.  Because the Universal Mutator does not ``know'' Java syntax, the Java compiler rejected a large number of the generated mutants (e.g., deleting definitions or declarations), leaving us with just over 70,000 mutants to analyze, ranging from 136 to 10,016 per project.
 
 \subsubsection{Analysis Results}
 
@@ -172,11 +172,11 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
     Tool & Mean & Median & Mean & Median & Ratio\\
     \hline
     \hline
-    SpotBugs & 0.47 & 0.00 & 0.37 & 0.21 & 0.7847 \\
+    SpotBugs & 28.93 & 14.00 & 0.07 & 0.07 & 0.002 \\
     \hline
-    PMD & 1.27 & 0.00 & 0.07 & 0.07 & 0.0562 \\
+    PMD & 53.73 & 32.00 & 0.07 & 0.07 & 0.001 \\
     \hline
-    Infer & 0.07 & 0.00 & 0.00 & 0.00 &  0.0002 \\
+    Infer & 11.60 & 3.00 & 0.00 & 0.00 &  0.000 \\
     \hline
   \end{tabular}
   \caption{Java tools: number of findings and mutation scores over all projects.}
@@ -190,7 +190,7 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
     Tool & Projects & Mean & Median \\
     \hline
     \hline
-    SpotBugs & 3 & 0.41 & 0.17 \\
+    SpotBugs & 3 & 0.05 & 0.06 \\
     \hline
     PMD & 0 & N/A & N/A \\
     \hline
@@ -203,25 +203,29 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
 
 Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools, and Tables \ref{tab:scorejava} and \ref{tab:cleanjava} provide numeric results for projects and clean projects, respectively.
 
-In terms of {\bf RQ1}, the raw results are clear:  SpotBugs finds vastly more uniquely killed mutants than the other tools, but PMD contributes a large number of its own unique detections, and clearly offers some independent utility.  Infer on the other hand, is only able to detect two mutants, but these are unique.  Unfortunately, these mutants only served to indicate that we were actually running Infer in such a way that it \emph{could} detect problems:  both were concurrency warnings, but the code change in both cases was simply removing a (semantically inoperative) {\tt \@Override} annotation.  It may be that the diff sizes in our code were simply too small for Infer's approach.
+In terms of {\bf RQ1}, the raw kills results suggest there is considereable value in running both SpotBugs and PMD.  Both produce a large number of unique detections, though PMD produces about 20\% more than SpotBugs.
+Infer on the other hand, is only able to detect two mutants, but these are unique.  Unfortunately, these mutants only served to indicate that we were actually running Infer in such a way that it \emph{could} detect problems:  both were concurrency warnings, but the code change in both cases was simply removing a (semantically inoperative) {\tt \@Override} annotation.  It may be that the diff sizes in our code were simply too small for Infer's approach.
 
-{\bf RQ2} is also answered in the affirmative.  While the raw kills for SpotBugs are impressive, it also produced fewer findings for clean code, giving it an excellent mutant ratio, making its dominance even more clear.  PMD's performance was acceptable, and better than any of the Solidity tools (note that comparing ratios across languages is potentially invalid, but not obviously so).  Infer is confirmed as nearly useless, again.
+{\bf RQ2} is also answered in the affirmative.  While the raw kills for SpotBugs are not as good as for PMD, it produced fewer findings, giving it a mutant ratio approximately twice that of PMD.
+
+We note that SpotBugs crashed for many more Java programs than PMD and Infer (neither crashed for any original file in our experiments).  SpotBugs ``failed to detect'' 23,000 of the mutants because it did not process the un-mutated file for 383 files, just over 23\% of the 1,664 total files.  Removing files for which SpotBugs failed, however, did not dramatically change results; SpotBugs mutant ratio rose to 0.003, but PMD's rose to 0.002.
 
 \begin{figure}
   {\scriptsize
-  \begin{itemize}
-  \item \url{https://stackoverflow.com/questions/4297014/what-are-the-differences-between-pmd-and-findbugs}
-  \item \url{https://www.sw-engineering-candies.com/blog-1/comparison-of-findbugs-pmd-and-checkstyle}
-  \item \url{https://www.reddit.com/r/java/comments/3i7w6n/checkstyle_vs_pmd_vs_findbugs_for_dummies_why/}
-  \end{itemize}
+    % \begin{itemize}
+    \raggedright    
+  \url{https://stackoverflow.com/questions/4297014/what-are-the-differences-between-pmd-and-findbugs} \\
+  \url{https://www.sw-engineering-candies.com/blog-1/comparison-of-findbugs-pmd-and-checkstyle} \\
+  \url{https://www.reddit.com/r/java/comments/3i7w6n/checkstyle_vs_pmd_vs_findbugs_for_dummies_why/} \\
+  %\end{itemize}
   }
 \caption{Blog posts and forum threads discussing Java static analysis tools.}
 \label{fig:blog}
 \end{figure}
 
-For {\bf RQ3}, to our knowledge there is no recent academic comparison of these tools; the most relevant study dates from 2004 \cite{CompareJavaTools}, used FindBugs, not SpotBugs, and reached no strong conclusions with respect to FindBugs vs. PMD.  However, the user postings listed in Figure \ref{fig:blog}, plus personal communications with security analysts who use these tools (citation removed for now, due to potential to compromise blinding) supported some basic conclusions.  SpotBugs/FindBugs is indeed the best tool for finding bugs; PMD focuses more on stylistic issues and has a weaker semantic model.  Mutants are much more likely to be bugs than stylistic issues (they alter semantics, not code style, in almost all cases: deletion or constant/operator changes obviously have no style impact).  Infer is closer to a model checker focusing on resource leaks than a truly general-purpose tool, arguably.  In fact, we suspect Infer would perform much better if we crafted complex mutation operators targeting some important subtle Java bugs; it is still fair to say that Infer is probably not a good \emph{general-purpose} static analysis tool for Java.
+For {\bf RQ3}, to our knowledge there is no recent academic comparison of these tools; the most relevant study dates from 2004 \cite{CompareJavaTools}, used FindBugs, not SpotBugs, and reached no strong conclusions with respect to FindBugs vs. PMD.  However, the user postings listed in Figure \ref{fig:blog}, plus personal communications with security analysts who use these tools (citation removed for now, due to potential to compromise blinding) supported some basic conclusions.  SpotBugs/FindBugs is supposedly the best tool for finding bugs; PMD focuses more on stylistic issues and has a weaker semantic model.  Running both is definitely recommended, as neither is extremely effective.  Infer is closer to a model checker focusing on resource leaks than a truly general-purpose tool, arguably.  In fact, we suspect Infer would perform much better if we crafted complex mutation operators targeting some important subtle Java bugs; it is still fair to say that Infer is probably not a good \emph{general-purpose} static analysis tool for Java.  Note that we did not use Infer's experimental, non-standard, detectors, however.
 
-For {\bf RQ4} there were very few clean projects, but the mutation scores for Infer were unchanged, and for SpotBugs the mean mutation score improved and median mutation score was worse.  Again, we see no evidence that non-clean code is a source of significant degradation on mutation detection.
+For {\bf RQ4} there were very few clean projects, but the mutation scores for Infer were unchanged, and for SpotBugs they were worse.  We see no evidence that non-clean code is a source of degradation in mutation detection.
 
 
 \subsection{Python Tools}
@@ -281,19 +285,20 @@ For Python, we analyzed the top 25 GitHub projects by our criteria (see above), 
 
 Figure \ref{fig:pythonvenn} shows the mutants killed by the Python analysis tools, and Tables \ref{tab:scorepython} and \ref{tab:cleanpython} provide numeric results for projects and clean projects, respectively.
 
-For {\bf RQ1}, Pylint and pyflakes both killed more than 15,000 mutants killed by no other tool; Pylint killed more mutants, but the relative difference was much smaller than in our Solidity or Java analysis.  It is clear both tools are well worth using, assuming these are not false positives.  Pyflakes' mutation score is lower than unique kills might suggest because it has almost no overlap with the other two tools.  It is doing something quite different than they are, apparently.
+For {\bf RQ1}, Pylint and pyflakes both killed more than 15,000 mutants killed by no other tool; Pylint killed more mutants, but the relative difference was much smaller than in our Solidity or Java analysis.  It is clear both tools are well worth using, assuming these are not false positives.  Pyflakes' mutation score is lower than unique kills might suggest because it has almost no overlap with the other two tools.  It is doing something different.
 
 The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes, in fact, and better than Pylint, because while it killed fewer mutants, it also produced fewer findings by far, overall.  PyChecker would be a good choice for quick and dirty analysis of code on the fly, perhaps, in that it had excellent mutation scores for some programs (hence a high mean) but is relatively ``quiet'' compared to the other tools.  However, its very low median mutation score is troubling; it may simply not work for some code.  A combination of pyflakes and Pylint seems safer, though adding the relatively low-findings PyChecker seems likely to have little cost.  For Python, we see that all of our measures are required to get a good picture of the tools.
 
 \begin{figure}
   {\scriptsize
-  \begin{itemize}
-  \item \url{https://stackoverflow.com/questions/1428872/pylint-pychecker-or-pyflakes}
-  \item \url{https://www.reddit.com/r/Python/comments/ii3gm/experience_with_pylint_pychecker_pyflakes/}
-  \item \url{https://www.slant.co/versus/12630/12631/~pylint_vs_pyflakes}
-  \item \url{https://news.ycombinator.com/item?id=12748885}
-  \item \url{https://doughellmann.com/blog/2008/03/01/static-code-analizers-for-python/}
-  \end{itemize}
+    % \begin{itemize}
+    \raggedright
+  \url{https://stackoverflow.com/questions/1428872/pylint-pychecker-or-pyflakes}\\
+  \url{https://www.reddit.com/r/Python/comments/ii3gm/experience_with_pylint_pychecker_pyflakes/}\\
+  \url{https://www.slant.co/versus/12630/12631/~pylint_vs_pyflakes}\\
+  \url{https://news.ycombinator.com/item?id=12748885}\\
+  \url{https://doughellmann.com/blog/2008/03/01/static-code-analizers-for-python/}\\
+  %\end{itemize}
   }
 \caption{Blog posts and forum threads discussing Python static analysis tools.}
 \label{fig:blogpython}
