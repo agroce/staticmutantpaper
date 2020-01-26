@@ -208,7 +208,7 @@ Infer on the other hand, is only able to detect two mutants, but these are uniqu
 
 {\bf RQ2} is also answered in the affirmative.  While the raw kills for SpotBugs are not as good as for PMD, it produced fewer findings, giving it a mutant ratio approximately twice that of PMD.
 
-We note that SpotBugs crashed for many more Java programs than PMD and Infer (neither crashed for any original file in our experiments).  SpotBugs ``failed to detect'' 23,000 of the mutants because it did not process the un-mutated file for 383 files, just over 23\% of the 1,664 total files.  Removing files for which SpotBugs failed, however, did not dramatically change results; SpotBugs mutant ratio rose to 0.003, but PMD's rose to 0.002.
+We note that SpotBugs crashed for many more Java programs than PMD and Infer (neither crashed for any original file in our experiments).  SpotBugs ``failed to detect'' 23,000 of the mutants because it did not process the un-mutated file for 383 files, over 12 of the 15 projects---just over 23\% of the 1,664 total files.  Removing files for which SpotBugs failed, however, did not dramatically change results; SpotBugs' mean mutation score rose to 0.09, and mutant ratio rose to 0.003, but PMD's mean score rose to 0.10, and mutant ratio to 0.002.
 
 \begin{figure}
   {\scriptsize
