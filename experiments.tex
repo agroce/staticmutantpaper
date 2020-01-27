@@ -6,13 +6,13 @@ Our primary experimental results are a set of comparisons of tools using our met
 \item {\bf RQ1:}  Does mutation analysis of static analysis tools produce actionable results?  That is, do raw mutation kills serve to distinguish tools from each other, or are all tools similar in terms of mutation detection capability?
 \item {\bf RQ2:}  Does our approach provide additional information beyond simply counting findings for the original, un-mutated analyzed code?  Do \emph{ratios} differ between programs, or does the number of mutants killed simply reflect the ``verbosity'' of each tool?
 \item {\bf RQ3:}  Do the rankings that raw kills and ratios establish agree with other sources of information about the effectiveness of the evaluated tools?  Can we confirm results from other evaluation methods, or informal opinion?
-\item {\bf RQ4:}  Do mutation scores for clean programs differ from those for programs for which tools report findings before mutation?
+\item {\bf RQ4:}  Are mutation scores for clean programs better than those for programs for which tools report findings before the program is mutated?
 \item {\bf RQ5:}  Do individual mutants, prioritized for ease of examination, allow us to identify classes of faults that
- different tools are good at/bad at?  Can we extend this information to improve tools by addressing identified weaknesses?
-\item {\bf RQ6:}  How easy is it identify low-hanging fruit for improving tools without prioritization to remove conceptually redundant mutants?
+ different tools are good at/bad at, and extend this information to improve tools by addressing identified weaknesses?
+\item {\bf RQ6:}  How easy is it identify low-hanging fruit for improving tools \emph{without} prioritization to remove conceptually redundant mutants?
   \end{itemize}
 
-In particular, we consider {\bf RQ2} to be of critical importance; if the mutant ratios for tools differ, then this is clear evidence that our hypothesis that the tendency of mutants to be faults, and to expect that mutated code will, by a sound and precise tool, be flagged as problematic more often than non-mutated code, holds.  This expectation that (some subset of the) mutants can serve as proxies for real, detectable faults is the core concept of our approach.
+In particular, we consider {\bf RQ2} to be of critical importance; if the mutant ratios for tools differ, then this is clear evidence that our hypothesis that the tendency of mutants to be faults, and to expect that mutated code will, by a more precise and accurate tool, be flagged as problematic more often than non-mutated code, holds.  This expectation that (some subset of the) mutants can serve as proxies for real, detectable faults is the core concept of our approach.
 {\bf RQ4} addresses a concern briefly mentioned in the introduction:  it is possible that warnings for the original code interfere with our definition of detection.  The ideal case for our approach is when a tool report no findings for un-mutated code, and either reports a finding (kills the mutant) or not (does not kill it) when the mutant is introduced.  Chekam et al. showed that the ``clean program assumption'' for testing, the idea that coverage will be similar for faulty and fixed versions of a program, is a threat to the validity of investigations of the relationship between coverage and fault detection \cite{CleanProgram}, and we want to establish that this is unlikely to be the case for our approach.
 {\bf RQ5} and {\bf RQ6} receive only preliminary answers, for the smart contract tools.
 

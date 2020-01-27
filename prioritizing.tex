@@ -67,13 +67,13 @@ are in the same file, divided by 10, but caps the amount added at
 $$ 5.0 \times r(\mathit{edit}_1, \mathit{edit}_2) +$$
 $$0.1 \times r(\mathit{source}_1, \mathit{source}_2) +$$
 $$0.1 \times r(\mathit{mutant}_1, \mathit{mutant}_2) +$$
-$$0.5 \times \mathit{different\_files} +$$
-$$max(0.25, \frac{\mathit{line\_distance}(\mathit{mutant}_1, \mathit{mutant}_2)}{10})$$
+$$0.5 \times \mathit{not\_same\_file} +$$
+$$max(0.25, \frac{\mathit{line\_dist}(\mathit{mutant}_1, \mathit{mutant}_2)}{10})$$
 
 \noindent Where $r$ is a Levenshtein-based string similarity ratio,
-and $\mathit{line\_distance}$ is the distance in a source file between
-two locations, in lines (and zero if the locations are in different
-source files).
+$\mathit{line\_dist}$ is the distance in a source file between
+two locations, in lines (zero if the locations are in different
+files), and $\mathit{not\_same\_file}$ is 0/1.
 
 We do not claim this is an optimal, or even tuned, metric; in the long run, it even may be completely replaced.  One element that will likely remain is the focus on source code, rather than bytecode; static analysis tools generally analyze source, and some even work for code that does not compile.  The metric we use
 provided useful results for a different problem, ranking mutants in an
