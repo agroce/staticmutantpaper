@@ -1,0 +1,30 @@
+We would like to thank the anonymous reviewers for their helpful comments.
+
+Below are responses to questions and clarifications.
+
+R1:
+
+Most importantly: https://github.com/mutantsforstaticanalysis/data now provides all the raw data used in the paper.  We hope this helps with qualitiative review.  We also, below, discuss briefly the issue of whether the mutants detected by any tools were of actual interest, which is indeed a core issue.  We do not examine mutants detected by no tools; due to the differential nature of the approach, we consider these potentially noise/uninteresting/not plausibly statically detected, but can simply ignore them.  Only when at least one tool detects a mutant do we care.  We note that the set of mutation operators can be easily extracted by examining the rule files in the open source repository for universalmutator.
+
+Yes, we actually used "number" of warnings, as a conservative measure of detection.  If a mutant simply causes a tool to change the message it reports, then we do not consider that a kill.  Similarly, if it loses one warning and produces another (which is in a sense the same thing, from a user's perspective), then it is not a kill.  The core reason we don't consider the location/nature of the warning change is that in some cases a mutant causes a warning about code far from the mutant location.  Therefore, we strictly require that a tool produce _more warnings_ when code is mutated, in order to be counted as detecting the mutant.  We experimented with other definitions on a small set of smart contracts, and this was much better than other approaches, in terms of the results making sense.  It is possible (though we didn't see this in practice with smart contracts) that it undercounts cases where 1) the original code produces warning A and 2) the mutated code "fixes" problem A and causes detection of a different problem, B.  If the mutant doesn't change the issue, just changes the exact nature of the problem, then we argue the mutant didn't introduce a fault, it just changed some aspect of an existing fault, which is not what we are interested in.  If we want to compare tools over existing faults, that is already doable.
+
+Good point, the source/bytecode choice is language dependent.  As to why we chose slither, see below.
+
+R2:
+
+We chose PMD primarily because we started by focusing on [43] as a comparison paper, rather than [28], due to the highly-focused scope of [28] (only Defects4J bugs, thus many many fewer relevant warnings/aspects of code considered, and any biases in producing the Defects4J data set).  Adding Error Prone as well would be a good idea.  In a way, [43] is a closer comparison to our work:  larger scope of interest, if higher risk of invalid results over that larger scope.
+
+"Importing" rules from one tool to another can be very helpful for actual users.  If one tool uses a better underlying analysis engine (e.g., better intermediate language, better alias/data-flow/etc. approach), then adding a rule from another tool can result in much better _actual_ detection of bugs, or fewer false positives.  Slither's IR and analysis are probably more scalable than Securify and more precise than SmartCheck, so even just using the same rule gives everyone better analysis results.  Also, the rules are generalizations that expand on the rules in SmartCheck/Securify: the mutation approach makes generalizing a specific rule somewhat easier, we think, due to providing multiple examples, not just a high-level concept.
+
+We used universalmutator for two reasons:  primarily because PIT is a bytecode-level mutation tool only, PMD requires source code, and we believe users want to inspect mutants for this application (and we needed to manually do some validation that the differences were meaningful).  Second because we wanted to use a consistent set of operators and mutation approach, and universalmutator was the best tool for the other languages.
+
+"better" in RQ4 means that we hypothesized that tools would produce _higher_ mutation scores (kill more mutants) for programs for which there were no findings in the original code.
+
+Securify is a static analysis tool, but it "symbolically analyzes the contract’s dependency graph to extract
+precise semantic information from the code" before checking compliance/violation patterns.  The first step, unfortunately, like many symbolic approaches, can sometimes scale abominably on real code.
+
+Our reasoning on the mutant ratio for Securify is that Securify does not notably produce warnings for mutants (which are probably bugs in some sense, even if not statically detectable) compared to the vast number of warnings it issues in general.  Other research supports the claim that Securify is prone to false positives over all code, and its behavior on mutants is not appreciably different (see the 20x or more higher ratios for the other tools.
+
+R3:
+
+Yes, we had to understand each tool's types of messages (for Pylint this was quite a painful process) and filter out ones that are essentially coding style rather than "this could be a bug!" issues, to the extent possible.  We made considerably effort to ensure these choices were fair to the tools.  Some tools made it easy by simply providing a setting to turn off "informational and style" issues, but for others it is a (minor in our opinion) threat to validity.

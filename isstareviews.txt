@@ -1,0 +1,94 @@
+SUBMISSION: 34
+TITLE: Using Differential Mutation Analysis to Compare and Improve Static Analysis Tools
+AUTHORS: Alex Groce, Iftekhar Ahmed, Josselin Feist, Gustavo Grieco, Fnu Jirigesi and Mehran Meidani
+
+----------- Overall evaluation -----------
+SCORE: -1 (weak reject)
+----- TEXT:
+Summary:
+This paper proposes to use mutation analysis (akin to mutation testing) to differentially compare the effectiveness of multiple static analysis tools. The paper applies to some input programs syntactic mutation operators. The main hypothesis is that such mutations have the tendency to introduce bugs that such tools should detect, and the idea of the paper is thus that a tool tends to be more effective when it signals additional warnings, i.e., "kills mutants", on mutated (and thus assumed to be faulty code). The study produces mutants using some Universal Mutator tool and compares different tools for Solidity, Java and Python. The paper concludes that this methodology reveals interesting insights about the relative usefulness of the tools and even allows one to find optimization potential for those tools.
+
+Evaluation:
+The paper is written in very good English, although in some places the wording could be more precisely chosen. For instance, in 1.1 the paper states that mutants are assumed to be killed if the number (!) of warnings increases. I hope the authors meant "set of warnings", not "number of warnings", because otherwise one would also assume a killed mutant if one tool produces an additional warning but loses another. I am not sure that would be sensible. In the author response I kindly ask to clarify this point.
+
+Overall I like this paper's idea. Surely it is desirable to measure the relative effectiveness of different static analyzers. I also surely can relate to the challenges involved. The current paper, as it is, can really only be seen as a first proposal of this idea, however. To me it reads like an extended idea paper. Let me explain how I come to this conclusion.
+
+As it stands, the paper focuses on a study, but the study setup is far from being falsifyable and reproducible. The paper applies mutations to a range of applications but neither are the mutations really described, nor are the applications at least named. Granted, the authors pledge to make available all this data once the paper has been accepted, but this is too late. The problem is that without having access to this information, it is hard to judge whether some of the paper's core assumptions actually hold. For instance, is it really true that the mutants introduce faults that static analysis tools should detect? And the mutants that are killed, are any of those true positives or are we just seeing noise over noise over noise? Currently the paper comprises no qualitative elements whatsoever, none of the warnings were ever inspected to see what their nature is, let alone whether whether they are true or false. Hence, the picture that this study paints is a very foggy one. T!
+ he non-availability of the study setup and results make it impossible also for reviewers to conduct such a qualitative analysis but actually it is the authors who should have conducted it in the first place.
+
+In result, I find it impossible to judge whether any of the produced results are meaningful. This will heavily depend on the exact static analyses and on the exact mutation operators. However, the paper fails to give any deeper insights into those.
+
+The paper states that the Universal Mutator tool has been extensively tuned for Solidity but not for the other languages. This greatly limites the validity of the experiments.
+In the Threats to Validity, the paper acknowledges that one threat is the low number of selected projects / contracts. It would have been interesting to see whether any of the detection ratios differ from one program to another. Again, also in this instance, the paper is missing out on providing potentially insightful qualitative information.
+
+I realize that it might be hard to cramp all such information into 10 pages, but then maybe this should really actually be a longer journal paper.
+
+The Related Work section misses at least the following recent piece of work on benchmarking static analysis tools, which may be a worthwhile read:
+
+Ivan Pashchenko, Stanislav Dashevskyi, Fabio Massacci: Delta-Bench: Differential Benchmark for Static Analysis Security Testing Tools. ESEM 2017: 163-168
+
+Toward an Automated Benchmark Management System (Lisa Nguyen Quang Do, Michael Eichberg, Eric Bodden), In Proceedings of the 5th ACM SIGPLAN International Workshop on State Of the Art in Program Analysis, pages 13–17, SOAP 2016.
+
+Minor issues:
+In 1.2, I guess nobody who doesn't know Solidity would know what selfdestruct is.
+Sec. 2: "simple want" -> "simply want"
+Sec. 2: I am not sure it's true that most static analyzers operate on source code, I would actually think that it depends heavily on the language.
+Sec. 3.1.5: Why are you only seeking to improve slither, not the others?
+
+=========
+IMPORTANT: In discussion with the PC chair, we kindly ask the authors to submit their artifacts for inspection at the time of rebuttal. Please try to anonymize the artifact as much as possible with little effort. Should the PC members be able to identify the authors nonetheless, this will not be held against the paper.
+
+
+----------------------- REVIEW 2 ---------------------
+SUBMISSION: 34
+TITLE: Using Differential Mutation Analysis to Compare and Improve Static Analysis Tools
+AUTHORS: Alex Groce, Iftekhar Ahmed, Josselin Feist, Gustavo Grieco, Fnu Jirigesi and Mehran Meidani
+
+----------- Overall evaluation -----------
+SCORE: 1 (weak accept)
+----- TEXT:
+This paper proposes an automated method for comparing static analysis tools. The idea is to use mutation testing to assess a given static analysis tool's ability to kill the generated mutants. To determine if the mutant is killed, the authors propose to count the number of generated warnings before and after the mutation is performed. An increase in the number of warnings on the mutated version is an indication that the static analysis tool is capable of detecting the injected fault. This proposed method is evaluated on three existing smart contract static analysis tools. The authors also perform an analyzing on Java (using SpotButs, PMD, and Infer) and python to compare the results.
+
+The idea behind the paper is simple yet interesting. I like the fact that the proposed mutation-based approach can be largely automated to compare static analysis tools since it is differential and based on a simple counting of warnings before and after the changes.
+
+I found the evaluation somewhat shallow, especially for Java and Python. For example for Java, it is not clear why PMD was chosen since closely related work [28] uses Error Prone instead. Also, PIT is the standard mutation tool used (both academia and industry) for Java projects.
+
+The take-away message from the findings is similar to that of [28] in that static analysis tools detect different sets of issues and are mostly complementary to each other. I am not sure what new insights we learn from the work here. It was also unclear to me why the authors decide to add existing rules from the other SA tools to Slither to improve it. I wonder if it's a good idea to make all SA tools the same in the sense that they should provide the same set of bug patterns/rules. This begs the question: why are RQs 5 and 6 relevant or important?
+
+RQ4 is vaguely formulated. What does "better" mean in this RQ?
+
+Why does Securify require hours/days of analysis? Isn't it a static analysis tool? Not clear.
+
+Related to Security, the authors state: "in the context of its near-zero mutant ration, we must suspect that many of the warnings are false positives"? Why? This is not evident. More elaboration is needed.
+
+The paper has a number of typos and would benefit from a careful proof-reading. Examples:
+
+may also simple want -> simply
+
+how easy is it identify -> to identify
+
+
+----------------------- REVIEW 3 ---------------------
+SUBMISSION: 34
+TITLE: Using Differential Mutation Analysis to Compare and Improve Static Analysis Tools
+AUTHORS: Alex Groce, Iftekhar Ahmed, Josselin Feist, Gustavo Grieco, Fnu Jirigesi and Mehran Meidani
+
+----------- Overall evaluation -----------
+SCORE: 1 (weak accept)
+----- TEXT:
+The authors propose an approach for automated differential comparison of static analysis tools, borrowing and adapting mutation analysis, a well-established mechanism to evaluate the quality of test suites, to the context of static analysis. This adaptation requires defining a notion of mutant killing (a static analysis tool killing a mutant), even in the case in which the original code did not fully pass the analysis (i.e., some “faults” were found on the original code). A mutant is said to be killed if the number of fault-related warnings found by the tool on the mutant increases with respect to that of the original code. Intuitively, a tool A is considered “better” than a competing tool B if the ratio between the number of killed mutants and the number of warnings issued by tool in general by tool A, is greater than that of B. This approach is evaluated on three static analysis tools for Solidity, as well as on static analysis tools for Java and Python, and conclu!
+ sions regarding the effectiveness of the tools are drawn, from the defined mutation-analysis based metric. Authors also analyze mutants identified by weaker tools to improve the tool with the best performance, in the context of Solidity.
+
+The paper is very well written, despite the fact that the organization is not standard, in some parts (in particular the organization of section 1). It contains sufficient motivation and comparison with related work, especially with those works that inspire the approach. The presented approach is rather simple, but I found it to be interesting and relevant. While from a technical point of view it is an application of differential assessment and mutation analysis, it contains concrete proposals to tackle some non-trivial issues, especially how to take into account the “verbosity” of tools (the rate between mutation score and number of findings). An additional technical proposal is the notion of distance between mutants, defined with the purpose of ranking “different” mutants for manual inspection. The description of this notion, and its motivation, is also well presented, although the distance definition itself ends up being quite ad hoc, especially with respect to th!
+ e weights used for the various components.
+
+Overall, I liked the way the evaluation is organized. Various different research questions are proposed, which are then experimentally answered. And different tools for different languages are considered, on a significant number of projects of a significant size (especially for Java and Python). The mutant ratio, the metric proposed, seems to be a precise proxy for comparing static analysis effectiveness. Beyond what this metric provides, I found some of the discussions around the comparison largely speculative. Also, how the mutant prioritization is used to identify what the authors call “low hanging fruit”, how the authors picked these cases and the amount of effort that the prioritization mechanism allows one to save (including the decisions that led to skipping certain mutants), appears to me as difficult to generalize, as it is presented in the paper. This is, in my opinion, a nice outcome but the weakest part of the experimental evaluation (RQ5 RQ6).
+
+A minor point that I wondered about is how the authors separated between fault-related findings, and informational/optimization related findings. Are these manually classified for each tool prior to performing the analysis?
+
+In general terms, I liked the presented idea, which is simple but effective, and contains non-trivial proposals for implementing the differential assessment based on mutants.
+
+Two minor typos:
+- may also simple want —> may also simply want
+- only need a week version —> only need a weak version
+
