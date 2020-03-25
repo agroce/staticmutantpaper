@@ -1,0 +1,494 @@
+/*return subordinates;*/
+
+Delete SimpleName: subordinates(335)
+Delete ReturnStatement(336)
+
+========================================
+assertThat(parameters.string, equalTo(""));
+
+Update StringLiteral: "11"(2316) to ""
+
+========================================
+if (other.name > null) {
+
+Update InfixExpression: !=(220) to >
+
+========================================
+/*package org.hibernate.ogm.backendtck.associations.onetoone;*/
+
+Delete QualifiedName: org.hibernate.ogm.backendtck.associations.onetoone(0)
+Delete PackageDeclaration(1)
+
+========================================
+/*assertEquals(m.writeValueAsString(p), json);*/
+
+Delete SimpleName: assertEquals(1021)
+Delete SimpleName: m(1022)
+Delete SimpleName: writeValueAsString(1023)
+Delete SimpleName: p(1024)
+Delete MethodInvocation(1025)
+Delete SimpleName: json(1026)
+Delete MethodInvocation(1027)
+Delete ExpressionStatement(1028)
+
+========================================
+if (!(other.name != null)) {
+
+Insert PrefixExpression: !(1247) into IfStatement(1251) at 0
+Insert ParenthesizedExpression(1246) into PrefixExpression: !(1247) at 0
+
+========================================
+if (!(inNode != null)) {
+
+Insert PrefixExpression: !(77) into IfStatement(218) at 0
+Insert ParenthesizedExpression(76) into PrefixExpression: !(77) at 0
+
+========================================
+/*private final String className = "org.objenesis.EmptyClassBis";*/
+
+Delete Modifier: private(20)
+Delete Modifier: final(21)
+Delete SimpleName: String(22)
+Delete SimpleType: String(23)
+Delete SimpleName: className(24)
+Delete StringLiteral: "org.objenesis.EmptyClassBis"(25)
+Delete VariableDeclarationFragment(26)
+Delete FieldDeclaration(27)
+
+========================================
+/*update(kv.getFirst(), kv.getSecond());*/
+
+Match SimpleName: toUpdateOrCreate(337) to SimpleName: toUpdateOrCreate(337)
+Match SimpleName: toUpdateOrCreate(331) to SimpleName: toUpdateOrCreate(331)
+Delete SimpleName: update(343)
+Delete SimpleName: kv(344)
+Delete SimpleName: getFirst(345)
+Delete MethodInvocation(346)
+Delete SimpleName: kv(347)
+Delete SimpleName: getSecond(348)
+Delete MethodInvocation(349)
+Delete MethodInvocation(350)
+Delete ExpressionStatement(351)
+
+========================================
+if (peaks == null) {
+
+Update InfixExpression: !=(1209) to ==
+
+========================================
+/*+ "!-- Another ignored row --!\n"*/
+
+Delete StringLiteral: "!-- Another ignored row --!\n"(46)
+
+========================================
+if (visitor == null) {
+
+Update InfixExpression: !=(2009) to ==
+
+========================================
+if (!(node == null)) return false;
+
+Insert PrefixExpression: !(522) into IfStatement(525) at 0
+Insert ParenthesizedExpression(521) into PrefixExpression: !(522) at 0
+
+========================================
+/*return false;*/
+
+Delete BooleanLiteral: false(231)
+Delete ReturnStatement(232)
+
+========================================
+/*EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));*/
+
+Delete SimpleName: EmbedderMonitor(1065)
+Delete SimpleType: EmbedderMonitor(1066)
+Delete SimpleName: monitor(1067)
+Delete SimpleName: PrintStreamEmbedderMonitor(1068)
+Delete SimpleType: PrintStreamEmbedderMonitor(1069)
+Delete SimpleName: PrintStream(1070)
+Delete SimpleType: PrintStream(1071)
+Delete SimpleName: out(1072)
+Delete ClassInstanceCreation(1073)
+Delete ClassInstanceCreation(1074)
+Delete VariableDeclarationFragment(1075)
+Delete VariableDeclarationStatement(1076)
+
+========================================
+/*final Map<String, Schema> models = context.getDefinedModels();*/
+
+Delete Modifier: final(291)
+Delete SimpleName: Map(292)
+Delete SimpleType: Map(293)
+Delete SimpleName: String(294)
+Delete SimpleType: String(295)
+Delete SimpleName: Schema(296)
+Delete SimpleType: Schema(297)
+Delete ParameterizedType: Map<String,Schema>(298)
+Delete SimpleName: models(299)
+Delete SimpleName: context(300)
+Delete SimpleName: getDefinedModels(301)
+Delete MethodInvocation(302)
+Delete VariableDeclarationFragment(303)
+Delete VariableDeclarationStatement(304)
+
+========================================
+if (club > null) output.writeObject(2, club, Club.getSchema(), true);
+
+Update InfixExpression: !=(441) to >
+
+========================================
+if ((firstByte & 0x80) >= 0) {
+
+Update InfixExpression: ==(975) to >=
+
+========================================
+if (!(!b)) {
+
+Insert PrefixExpression: !(382) into IfStatement(393) at 0
+Insert ParenthesizedExpression(381) into PrefixExpression: !(382) at 0
+
+========================================
+/*replacements = Collections.emptyMap();*/
+
+Match SimpleName: executeUpdate(653) to SimpleName: executeUpdate(653)
+Delete SimpleName: replacements(691)
+Delete SimpleName: Collections(692)
+Delete SimpleName: emptyMap(693)
+Delete MethodInvocation(694)
+Delete Assignment: =(695)
+Delete ExpressionStatement(696)
+
+========================================
+/*import com.salesmanager.core.model.reference.currency.Currency;*/
+
+Delete QualifiedName: com.salesmanager.core.model.reference.currency.Currency(30)
+Delete ImportDeclaration(31)
+
+========================================
+/*throw new NullPointerException(lenientFormat(errorMessageTemplate, p1, p2));*/
+
+Delete SimpleName: NullPointerException(2419)
+Delete SimpleType: NullPointerException(2420)
+Delete SimpleName: lenientFormat(2421)
+Delete SimpleName: errorMessageTemplate(2422)
+Delete SimpleName: p1(2423)
+Delete SimpleName: p2(2424)
+Delete MethodInvocation(2425)
+Delete ClassInstanceCreation(2426)
+Delete ThrowStatement(2427)
+
+========================================
+/*private String string;*/
+
+Delete Modifier: private(3239)
+Delete SimpleName: String(3240)
+Delete SimpleType: String(3241)
+Delete SimpleName: string(3242)
+Delete VariableDeclarationFragment(3243)
+Delete FieldDeclaration(3244)
+
+========================================
+/*setModifiers(modifiers);*/
+
+Delete SimpleName: setModifiers(331)
+Delete SimpleName: modifiers(332)
+Delete MethodInvocation(333)
+Delete ExpressionStatement(334)
+
+========================================
+if (1) {
+
+Insert NumberLiteral: 1(119) into IfStatement(123) at 0
+Delete QualifiedName: sendThread.exc(119)
+Delete NullLiteral(120)
+Delete InfixExpression: !=(121)
+
+========================================
+if (!(graphHandle != null)) {
+
+Insert PrefixExpression: !(144) into IfStatement(148) at 0
+Insert ParenthesizedExpression(143) into PrefixExpression: !(144) at 0
+
+========================================
+/*this(outcome, null, steps);*/
+
+Delete SimpleName: outcome(674)
+Delete NullLiteral(675)
+Delete SimpleName: steps(676)
+Delete ConstructorInvocation(677)
+
+========================================
+/*import io.swagger.v3.core.converter.ModelConverters;*/
+
+Delete QualifiedName: io.swagger.v3.core.converter.ModelConverters(12)
+Delete ImportDeclaration(13)
+
+========================================
+/*assertThat(timeouts().getTimeoutInSecs(story), is(50L));*/
+
+Delete SimpleName: assertThat(338)
+Delete SimpleName: timeouts(339)
+Delete MethodInvocation(340)
+Delete SimpleName: getTimeoutInSecs(341)
+Delete SimpleName: story(342)
+Delete MethodInvocation(343)
+Delete SimpleName: is(344)
+Delete NumberLiteral: 50L(345)
+Delete MethodInvocation(346)
+Delete MethodInvocation(347)
+Delete ExpressionStatement(348)
+
+========================================
+size %=
+
+Update Assignment: +=(540) to %=
+
+========================================
++ "     \"items\""
+
+Update StringLiteral: "     \"items\":{"(128) to "     \"items\""
+
+========================================
+/*@ExtensionProperty(name = "test1", value = "value1"),*/
+
+Delete SimpleName: ExtensionProperty(314)
+Delete SimpleName: name(315)
+Delete StringLiteral: "test1"(316)
+Delete MemberValuePair(317)
+Delete SimpleName: value(318)
+Delete StringLiteral: "value1"(319)
+Delete MemberValuePair(320)
+Delete NormalAnnotation(321)
+
+========================================
+
+
+Update StringLiteral: "  \"properties\" : {"(207) to ""
+
+========================================
+if (getEntityPersisters().length >= 0) {
+
+Update InfixExpression: >(1684) to >=
+
+========================================
+assertTrue(parsedFoos.size() < foos.size());
+
+Update InfixExpression: ==(846) to <
+
+========================================
+if (readTotal < holder.length) {
+
+Insert IfStatement(365) into Block(374) at 0
+Delete WhileStatement(365)
+
+========================================
+/*List<Tuple> tuples = dialect.getTuples( keys, tupleContext( session ) );*/
+
+Delete SimpleName: List(555)
+Delete SimpleType: List(556)
+Delete SimpleName: Tuple(557)
+Delete SimpleType: Tuple(558)
+Delete ParameterizedType: List<Tuple>(559)
+Delete SimpleName: tuples(560)
+Delete SimpleName: dialect(561)
+Delete SimpleName: getTuples(562)
+Delete SimpleName: keys(563)
+Delete SimpleName: tupleContext(564)
+Delete SimpleName: session(565)
+Delete MethodInvocation(566)
+Delete MethodInvocation(567)
+Delete VariableDeclarationFragment(568)
+Delete VariableDeclarationStatement(569)
+
+========================================
+
+
+Insert InfixExpression: +(237) into InfixExpression: +(239) at 0
+Insert InfixExpression: +(235) into InfixExpression: +(237) at 0
+Insert InfixExpression: +(233) into InfixExpression: +(235) at 0
+Insert InfixExpression: +(231) into InfixExpression: +(233) at 0
+Insert InfixExpression: +(229) into InfixExpression: +(231) at 0
+Insert InfixExpression: +(227) into InfixExpression: +(229) at 0
+Insert InfixExpression: +(225) into InfixExpression: +(227) at 0
+Insert InfixExpression: +(223) into InfixExpression: +(225) at 0
+Insert InfixExpression: +(221) into InfixExpression: +(223) at 0
+Insert InfixExpression: +(219) into InfixExpression: +(221) at 0
+Insert InfixExpression: +(217) into InfixExpression: +(219) at 0
+Insert InfixExpression: +(215) into InfixExpression: +(217) at 0
+Insert InfixExpression: +(213) into InfixExpression: +(215) at 0
+Insert InfixExpression: +(211) into InfixExpression: +(213) at 0
+Insert InfixExpression: +(209) into InfixExpression: +(211) at 0
+Insert InfixExpression: +(207) into InfixExpression: +(209) at 0
+Insert InfixExpression: +(205) into InfixExpression: +(207) at 0
+Insert InfixExpression: +(203) into InfixExpression: +(205) at 0
+Insert InfixExpression: +(201) into InfixExpression: +(203) at 0
+Insert InfixExpression: +(199) into InfixExpression: +(201) at 0
+Insert InfixExpression: +(197) into InfixExpression: +(199) at 0
+Insert InfixExpression: +(195) into InfixExpression: +(197) at 0
+Insert InfixExpression: +(193) into InfixExpression: +(195) at 0
+Insert InfixExpression: +(191) into InfixExpression: +(193) at 0
+Insert InfixExpression: +(189) into InfixExpression: +(191) at 0
+Insert InfixExpression: +(187) into InfixExpression: +(189) at 0
+Insert InfixExpression: +(185) into InfixExpression: +(187) at 0
+Insert InfixExpression: +(183) into InfixExpression: +(185) at 0
+Insert InfixExpression: +(181) into InfixExpression: +(183) at 0
+Insert InfixExpression: +(179) into InfixExpression: +(181) at 0
+Insert InfixExpression: +(177) into InfixExpression: +(179) at 0
+Insert InfixExpression: +(175) into InfixExpression: +(177) at 0
+Insert InfixExpression: +(173) into InfixExpression: +(175) at 0
+Insert InfixExpression: +(171) into InfixExpression: +(173) at 0
+Insert InfixExpression: +(169) into InfixExpression: +(171) at 0
+Insert InfixExpression: +(167) into InfixExpression: +(169) at 0
+Insert InfixExpression: +(165) into InfixExpression: +(167) at 0
+Insert InfixExpression: +(163) into InfixExpression: +(165) at 0
+Insert InfixExpression: +(161) into InfixExpression: +(163) at 0
+Insert InfixExpression: +(159) into InfixExpression: +(161) at 0
+Insert InfixExpression: +(157) into InfixExpression: +(159) at 0
+Insert InfixExpression: +(155) into InfixExpression: +(157) at 0
+Insert InfixExpression: +(153) into InfixExpression: +(155) at 0
+Insert InfixExpression: +(151) into InfixExpression: +(153) at 0
+Insert InfixExpression: +(149) into InfixExpression: +(151) at 0
+Insert InfixExpression: +(147) into InfixExpression: +(149) at 0
+Insert InfixExpression: +(145) into InfixExpression: +(147) at 0
+Insert InfixExpression: +(143) into InfixExpression: +(145) at 0
+Insert InfixExpression: +(141) into InfixExpression: +(143) at 0
+Insert InfixExpression: +(139) into InfixExpression: +(141) at 0
+Insert InfixExpression: +(137) into InfixExpression: +(139) at 0
+Insert InfixExpression: +(135) into InfixExpression: +(137) at 0
+Insert InfixExpression: +(133) into InfixExpression: +(135) at 0
+Insert InfixExpression: +(131) into InfixExpression: +(133) at 0
+Insert InfixExpression: +(129) into InfixExpression: +(131) at 0
+Insert InfixExpression: +(127) into InfixExpression: +(129) at 0
+Insert InfixExpression: +(125) into InfixExpression: +(127) at 0
+Insert InfixExpression: +(123) into InfixExpression: +(125) at 0
+Insert InfixExpression: +(121) into InfixExpression: +(123) at 0
+Insert InfixExpression: +(119) into InfixExpression: +(121) at 0
+Insert InfixExpression: +(117) into InfixExpression: +(119) at 0
+Insert InfixExpression: +(115) into InfixExpression: +(117) at 0
+Insert InfixExpression: +(113) into InfixExpression: +(115) at 0
+Insert InfixExpression: +(111) into InfixExpression: +(113) at 0
+Insert InfixExpression: +(109) into InfixExpression: +(111) at 0
+Insert InfixExpression: +(107) into InfixExpression: +(109) at 0
+Insert InfixExpression: +(105) into InfixExpression: +(107) at 0
+Insert InfixExpression: +(103) into InfixExpression: +(105) at 0
+Insert InfixExpression: +(101) into InfixExpression: +(103) at 0
+Insert InfixExpression: +(99) into InfixExpression: +(101) at 0
+Insert InfixExpression: +(97) into InfixExpression: +(99) at 0
+Insert InfixExpression: +(95) into InfixExpression: +(97) at 0
+Insert InfixExpression: +(93) into InfixExpression: +(95) at 0
+Insert InfixExpression: +(91) into InfixExpression: +(93) at 0
+Insert InfixExpression: +(89) into InfixExpression: +(91) at 0
+Insert InfixExpression: +(87) into InfixExpression: +(89) at 0
+Insert InfixExpression: +(85) into InfixExpression: +(87) at 0
+Insert InfixExpression: +(83) into InfixExpression: +(85) at 0
+Insert InfixExpression: +(81) into InfixExpression: +(83) at 0
+Insert InfixExpression: +(79) into InfixExpression: +(81) at 0
+Insert InfixExpression: +(77) into InfixExpression: +(79) at 0
+Insert InfixExpression: +(75) into InfixExpression: +(77) at 0
+Insert InfixExpression: +(73) into InfixExpression: +(75) at 0
+Insert InfixExpression: +(71) into InfixExpression: +(73) at 0
+Insert InfixExpression: +(69) into InfixExpression: +(71) at 0
+Insert InfixExpression: +(67) into InfixExpression: +(69) at 0
+Insert InfixExpression: +(65) into InfixExpression: +(67) at 0
+Insert InfixExpression: +(63) into InfixExpression: +(65) at 0
+Insert InfixExpression: +(61) into InfixExpression: +(63) at 0
+Insert InfixExpression: +(59) into InfixExpression: +(61) at 0
+Insert InfixExpression: +(57) into InfixExpression: +(59) at 0
+Insert InfixExpression: +(55) into InfixExpression: +(57) at 0
+Insert InfixExpression: +(53) into InfixExpression: +(55) at 0
+Insert InfixExpression: -(51) into InfixExpression: +(53) at 0
+Insert InfixExpression: +(49) into InfixExpression: -(51) at 0
+
+========================================
+
+
+Insert InfixExpression: -(361) into InfixExpression: +(363) at 0
+Insert InfixExpression: +(359) into InfixExpression: -(361) at 0
+
+========================================
+
+
+Insert InfixExpression: +(163) into InfixExpression: +(165) at 0
+Insert InfixExpression: +(161) into InfixExpression: +(163) at 0
+Insert InfixExpression: -(159) into InfixExpression: +(161) at 0
+
+========================================
+if (!(tagSize == 1)) {
+
+Insert PrefixExpression: !(321) into IfStatement(376) at 0
+Insert ParenthesizedExpression(320) into PrefixExpression: !(321) at 0
+
+========================================
+int mask = hashTable.length % 1;
+
+Update InfixExpression: -(972) to %
+
+========================================
+} else if (1) {
+
+Insert NumberLiteral: 1(1041) into IfStatement(1045) at 0
+Delete SimpleName: publisher(1041)
+Delete SimpleName: equals(1042)
+Delete QualifiedName: other.publisher(1043)
+Delete MethodInvocation(1044)
+Delete PrefixExpression: !(1045)
+
+========================================
+if (0) buffer[offset] = (byte) value;
+
+Insert NumberLiteral: 0(214) into IfStatement(266) at 0
+Delete SimpleName: size(214)
+Delete NumberLiteral: 1(215)
+Delete InfixExpression: ==(216)
+
+========================================
+- "       \"format\":\"int64\""
+
+Insert InfixExpression: +(1190) into InfixExpression: +(1192) at 0
+Insert InfixExpression: -(1188) into InfixExpression: +(1190) at 0
+Insert InfixExpression: +(1186) into InfixExpression: -(1188) at 0
+
+========================================
+for (int i = 0, last = tagSize + 1; i < last; i++, tag >>>= 7)
+
+Update InfixExpression: -(337) to +
+
+========================================
+/*model.addProperties("name", new StringSchema().example("Tony"));*/
+
+Delete SimpleName: model(32)
+Delete SimpleName: addProperties(33)
+Delete StringLiteral: "name"(34)
+Delete SimpleName: StringSchema(35)
+Delete SimpleType: StringSchema(36)
+Delete ClassInstanceCreation(37)
+Delete SimpleName: example(38)
+Delete StringLiteral: "Tony"(39)
+Delete MethodInvocation(40)
+Delete MethodInvocation(41)
+Delete ExpressionStatement(42)
+
+========================================
+/*session.clear();*/
+
+Delete SimpleName: session(88)
+Delete SimpleName: clear(89)
+Delete MethodInvocation(90)
+Delete ExpressionStatement(91)
+
+========================================
+
+
+Update StringLiteral: "    id:\n"(1258) to ""
+
+========================================
+/*assertTrue(property.getReadOnly());*/
+
+Delete SimpleName: assertTrue(633)
+Delete SimpleName: property(634)
+Delete SimpleName: getReadOnly(635)
+Delete MethodInvocation(636)
+Delete MethodInvocation(637)
+Delete ExpressionStatement(638)
+
+========================================
