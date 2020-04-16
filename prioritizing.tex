@@ -52,11 +52,11 @@ weighted with multipliers of 5.0, 0.1, and 0.1, respectively; the type
 of change (mutation operator, roughly) dominates this part of the
 distance, because it best describes ``what the mutant did''; however,
 because many mutants will have the same change (e.g., changing {\tt +}
-to {\tt -}, the other ratios also often matter.  The Python
-{\tt Levenshtein} library's similarity ratio is used, as it is based
-on true minimal string edits; it reports similarity ratios between 0.0
-and 1.0.
-
+to {\tt -}, the other ratios also often matter.
+%The Python
+%{\tt Levenshtein} library's similarity ratio is used, as it is based
+%on true minimal string edits; it reports similarity ratios between 0.0
+%and 1.0.
 Our metric also incorporates a measure of the distance in the source
 code between the locations of two mutants.  If the mutants are to
 different files, this adds 0.5 to the distance; it also adds 0.25
@@ -64,10 +64,8 @@ times the number of source lines separating the two mutants if they
 are in the same file, divided by 10, but caps the amount added at
 0.25.  The full metric, therefore is:
 
-$$ 5.0 \times r(\mathit{edit}_1, \mathit{edit}_2) +$$
-$$0.1 \times r(\mathit{source}_1, \mathit{source}_2) +$$
-$$0.1 \times r(\mathit{mutant}_1, \mathit{mutant}_2) +$$
-$$0.5 \times \mathit{not\_same\_file} +$$
+$$ 5.0 \times r(\mathit{edit}_1, \mathit{edit}_2) + 0.1 \times r(\mathit{source}_1, \mathit{source}_2) +$$
+$$0.1 \times r(\mathit{mutant}_1, \mathit{mutant}_2) + 0.5 \times \mathit{not\_same\_file} +$$
 $$max(0.25, \frac{\mathit{line\_dist}(\mathit{mutant}_1, \mathit{mutant}_2)}{10})$$
 
 \noindent Where $r$ is a Levenshtein-based string similarity ratio,
@@ -75,7 +73,8 @@ $\mathit{line\_dist}$ is the distance in a source file between
 two locations, in lines (zero if the locations are in different
 files), and $\mathit{not\_same\_file}$ is 0/1.
 
-We do not claim this is an optimal, or even tuned, metric; in the long run, it even may be completely replaced.  One element that will likely remain is the focus on source code, rather than bytecode; static analysis tools generally analyze source, and some even work for code that does not compile.  The metric we use
+We do not claim this is an optimal, or even tuned, metric; in the long
+run, it even may be completely replaced.  However, the metric we use
 provided useful results for a different problem, ranking mutants in an
 effort similar to that of Groce et
 al. \cite{groce2015verified,groce2018verified} to examine unkilled
