@@ -1,15 +1,16 @@
 \section{Experimental Results}
 
-Our primary experimental results are a set of comparisons of tools using our method, for three languages: Solidity (the most popular language for smart contracts), Java, and Python.  We used the Universal Mutator tool for all experiments, since e.g., PIT \cite{pitmut} does not produce source-level mutants and the PMD tool requires source code; we also wanted to use a consistent mutation generation method for all languages, to the extent possible; for Solidity and Python, we believe the Universal Mutator is simply the best available tool.   We also our results to answer a set of research questions that consider the utility of our method:
+Our primary experimental results are a set of comparisons of tools using our method, for three languages: Solidity (the most popular language for smart contracts), Java, and Python.  We used the Universal Mutator tool for all experiments; for Solidity and Python, we believe the Universal Mutator is simply the best available tool.  For Java, PIT \cite{pitmut} is more popular, but does not produce source-level mutants, needed for PMD and for manual inspection of results.
+We used our results to answer a set of research questions:
 
-\begin{itemize}
-\item {\bf RQ1:}  Does mutation analysis of static analysis tools produce actionable results?  That is, do raw mutation kills serve to distinguish tools from each other, or are all tools similar in terms of mutation detection capability?
-\item {\bf RQ2:}  Does our approach provide additional information beyond simply counting findings for the original, un-mutated analyzed code?  Do \emph{ratios} differ between programs, or does the number of mutants killed simply reflect the ``verbosity'' of each tool?
-\item {\bf RQ3:}  Do the rankings that raw kills and ratios establish agree with other sources of information about the effectiveness of the evaluated tools?  Can we confirm results from other evaluation methods, or informal opinion?
-\item {\bf RQ4:}  Are mutation scores for clean programs higher (more mutants killed) than those for programs for which tools report findings before mutation?
-\item {\bf RQ5:}  Are killed mutants flagged due to real faults, where the finding is related to the introduced fault?  That is to say, is the evaluation based on meaningful semantic changes some (but not all) tools detect?
+\begin{itemize}[labelsep=3pt,leftmargin=12pt]
+\item {\bf RQ1:}  Does mutation analysis of static analysis tools produce actionable results?  That is, do raw mutation kills serve to distinguish tools from each other, or are all tools similar?
+\item {\bf RQ2:}  Does our approach provide additional information beyond simply counting findings for the original, un-mutated analyzed code?  Do \emph{ratios} differ between static analysis tools?
+\item {\bf RQ3:}  Do the rankings that raw kills and ratios establish agree with other sources of information about the effectiveness of the evaluated tools?  Can we independently confirm our results?
+\item {\bf RQ4:}  Do tools detect more mutants in programs for which they produce no warnings, initially?
+\item {\bf RQ5:}  Are mutants distinguishing tools usually flagged due to real faults, where the finding is related to the introduced fault; that is, are our results usually \emph{meaningful}?  
 \item {\bf RQ6:}  Do individual mutants, prioritized for ease of examination, allow us to identify classes of faults that
- different tools are good at/bad at, and extend this information to improve tools by addressing identified weaknesses?  How does this compare to using mutants that have not been prioritized?
+ different tools are good at/bad at, and use this information to improve tools?  How does this compare to using mutants that have \emph{not} been prioritized?
   \end{itemize}
 
 In particular, we consider {\bf RQ2} to be of critical importance; if the mutant ratios for tools differ, then this is clear evidence that our hypothesis that the tendency of mutants to be faults, and to expect that mutated code will, by a more precise and accurate tool, be flagged as problematic more often than non-mutated code, holds.  This expectation that (some subset of the) mutants can serve as proxies for real, detectable faults is the core concept of our approach.
@@ -33,7 +34,7 @@ We could have used a set of high-transaction contracts, or known-important contr
 \subsubsection{Analysis Results}
 
 \begin{figure}
-  \includegraphics[width=0.6\columnwidth]{solidity.png}
+  \includegraphics[width=0.4\columnwidth]{solidity.png}
   \caption{Mutants killed by Solidity static analysis tools.}
   \label{fig:solidityvenn}
 \end{figure}
@@ -45,36 +46,22 @@ We could have used a set of high-transaction contracts, or known-important contr
     \hline
     \hline
     Slither & 2.37 & 1.0 & 0.09 & 0.09 & 0.038 \\
+    Clean (39) & - & - & 0.11 & 0.11 & -\\
     \hline
     SmartCheck & 1.89 & 1.0 & 0.05 & 0.05 & 0.026 \\
+    Clean (27) & - & - & 0.03 & 0.01 & - \\
     \hline
     Securify & 24.65 & 17.0 & 0.03 & 0.02 &  0.001 \\
+    Clean (5) & - & - & 0.00 & 0.00 & - \\
     \hline
+    
   \end{tabular}
   \caption{Solidity tool results over all contracts.}
   \label{tab:scoresolidity}
 \end{table}
 
-\begin{table}
-  \begin{tabular}{l|r|r|r|r|r}
-    & & \multicolumn{2}{|c|}{} & \multicolumn{2}{|c}{Clean For All (3)} \\
-    & \# Clean & \multicolumn{2}{|c|}{Mutation Score} &  \multicolumn{2}{|c}{Mutation Score}\\
-    Tool & Contracts & Mean & Median & Mean & Median\\
-    \hline
-    \hline
-    Slither & 39 & 0.11 & 0.11 & 0.09 & 0.09 \\
-    \hline
-    SmartCheck & 27 & 0.03 & 0.01 & 0.03 & 0.00 \\
-    \hline
-    Securify & 5 & 0.00 & 0.00 & 0.00 & 0.00 \\
-    \hline
-  \end{tabular}
-  \caption{Solidity tool clean contract results.}
-  \label{tab:cleansolidity}
-\end{table}
 
-
-Figure \ref{fig:solidityvenn} shows the mutants killed by the Solidity analysis tools.  Tables \ref{tab:scoresolidity} and \ref{tab:cleansolidity} provide numeric details of the results, including the \emph{ratio} for each tool, adjusting its mutation scores by its' general tendency to produce findings.  First, a user examining these results would suspect that Slither and SmartCheck are both useful tools, and should likely both be applied in a high-risk security-sensitive context like smart contract development.  Second, a user might suspect that the large number of findings produced, and smaller number of mutants killed, for Securify, mean that including Securify in the static analysis tool stable is a more difficult decision.  On the one hand, Securify does detect nearly as many mutants it alone can identify as SmartCheck.  The large number of findings, and very bad mutant ratio, however, lead us to suspect that many of these ``detected'' mutants are false positives (or, at least, that the problem is not the one Securify identifies).  Extracting the signal from Securify's noise will be difficult.  We also note that while running Slither and SmartCheck on all 46,769 valid mutants was relatively quick (it took about 6 days sequential compute time for Slither and 3 days for SmartCheck, i.e., about 5-15 seconds per mutant for both tools), Securify often required many hours to analyze a mutant, and frequently required a few days to analyze a mutant; the full analysis required over three months of compute time.
+Figure \ref{fig:solidityvenn} shows the mutants killed by the Solidity analysis tools.  Table \ref{tab:scoresolidity} provides numeric details of the results, including the \emph{ratio} for each tool, adjusting its mutation scores by its' general tendency to produce findings.  The second row for each tool shows the number of contracts for which it reported no findings, and the mutation scores over those contracts, only. A user examining these results would suspect that Slither and SmartCheck are both useful tools, and should likely both be applied in a high-risk security-sensitive context like smart contract development.  A user might also suspect that the large number of findings produced, and smaller number of mutants killed, for Securify, means that whether to apply Securify is a more difficult decision.  On the one hand, Securify does detect nearly as many mutants it alone can identify as SmartCheck.  The large number of findings, and very bad mutant ratio, however, lead us to suspect that many of these ``detected'' mutants are false positives (or, at least, that the problem is not the one Securify identifies).  Extracting the signal from Securify's noise will be difficult.  We also note that while running Slither and SmartCheck on all 46,769 valid mutants was relatively quick (it took about 6 days sequential compute time for Slither and 3 days for SmartCheck, i.e., about 5-15 seconds per mutant for both tools), Securify often required many hours to analyze a mutant, and frequently required a few days to analyze a mutant; the full analysis required over three months of compute time.
 
 For our research questions, {\bf RQ1} is clearly answered in the affirmative.  Figure \ref{fig:solidityvenn} shows that the tools address quite different problems, with all tools reporting far more uniquely detected mutants than mutants in common with other tools.  There are only 18 mutants detected by all tools, all of them involving replacement of {\tt msg.sender} (the caller of a smart contract, which may be another smart contract) with {\tt tx.origin} (the original initiator of a sequence of blockchain calls, a ``human'' account).  Use of {\tt tx.origin} is usually a bad idea, can lead to incorrect behavior, and may not be relied on to be meaningful at all in future versions of Ethereum (\url{https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof}).  
 
@@ -92,7 +79,7 @@ Because our random contracts' quality might be low, we also checked our results 
 
 \subsubsection{Improving Slither {\bf (RQ6)}}
 
-Based on the differential mutation analysis, we identified three low-hanging fruit to improve the performance of Slither.  We chose Slither in part because it seems to have a better underlying intermediate language and analysis engine, and thus is likely to produce better results for the same rule than the other tools.  The process was simple.  First, we produced a list of all mutants killed by either SmartCheck or Securify, but not killed by Slither.  We then applied the prioritization method based on the FPF algorithm and the distance metric described in Section \ref{sec:prioritizing}, and examined the mutants in rank order.  Many of the mutants were difficult to identify as true or false positives, absent context.  Some opportunities for enhancement were clear, but seemed likely to require considerable effort to implement without producing a large number of false positives.  For example, Securify often detected when an ERC20 token contract's guard preventing making the special 0x0 address the owner of a contract was removed, and issued the error {\tt Violation for MissingInputValidation}. Detecting such missing guards is probably useful, but formulating a way to do it without producing false positives is non-trivial.  We wanted to show that mutants could identify \emph{useful} but \emph{easy to implement} missing detectors.  Examining the first few mutants, we identified three such, based on mutants killed by either SmartCheck or Securify, or both:
+Based on the differential mutation analysis, we identified three low-hanging fruit to improve the performance of Slither.  We chose Slither in part because it seems to have a better underlying intermediate language and analysis engine, and thus is likely to produce better results for the same rule than the other tools.  The process was simple.  First, we produced a list of all mutants killed by either SmartCheck or Securify, but not killed by Slither.  We then applied the prioritization method based on the FPF algorithm and the distance metric described in Section \ref{sec:prioritizing}, and examined the mutants in rank order.  Many of the mutants were difficult to identify as true or false positives, absent context.  Some opportunities for enhancement were clear, but seemed likely to require considerable effort to implement without producing a large number of false positives.  For example, Securify often detected when an ERC20 token contract's guard preventing making the special 0x0 address the owner of a contract was removed, and issued the error {\tt Violation for MissingInputValidation}. Detecting such missing guards is probably useful, but doing so without producing false positives is non-trivial.  We wanted to show that mutants could identify \emph{useful} but \emph{easy to implement} missing detectors.  Examining only a few mutants, we identified three:
 
 \begin{figure}
   {\scriptsize
@@ -141,7 +128,7 @@ Based on the differential mutation analysis, we identified three low-hanging fru
 \item {\bf Loss of precision:}  Solidity only supports integer types.  This means that performing division before multiplication can introduce rounding that is not present when the multiplication is performed first.  This is a fairly important problem, given the frequency with which Solidity code performs financial calculations where maximum precision is desired.  SmartCheck provides a detector for such precision losses \url{https://github.com/smartdec/smartcheck/blob/master/rule\_descriptions/SOLIDITY\_DIV\_MUL/}.
 \end{enumerate}      
 
-All three of these detectors were submitted as PRs, vetted over an internal benchmark set of contracts used by the Slither developers to evaluate new detectors, and accepted for release in the public version of Slither.  All three detectors produce some true positives (actual problems, though not always exploitable) in benchmark contracts, have acceptably low false positive rates, and were deemed valuable enough to include as non-informational (medium severity) detectors.  The first mutants in prioritized rank exhibiting the issues, shown above, were the 2nd, 9th, and 12th non-statement-deletion mutants ranked for SmartCheck, out of over 800 such mutants.  Using our prioritization, it was possible to identify these issues by examining fewer than 20 unkilled mutants.  Without prioritization, on average a developer would have to look at more than 200, 80, and 400 mutants, respectively, to find instances of these problems.  Interestingly, the very fact that these instances are ``needles in a haystack'' among the mutants not killed by Slither means that the results in Figure \ref{fig:solidityvenn} and Tables \ref{tab:scoresolidity} and \ref{tab:cleansolidity} are almost unaltered by our improvements to Slither: our analysis is fairly robust to modest tool improvements, unless added detectors account for a large number of mutants not detected by the tool.  Adding such detectors will also only improve mutation ratio if they do not add many false positives.  Substantial changes in results therefore require adding very effective (for mutants) detectors that seldom trigger for correct code (or at least trigger much less than for mutants).  ``Cheating'' with respect to a mutation benchmark is thus, we hope, difficult without actual major tool improvements.
+All three of these detectors were submitted as PRs, vetted over an internal benchmark set of contracts used by the Slither developers to evaluate new detectors, and accepted for release in the public version of Slither.  All three detectors produce some true positives (actual problems, though not always exploitable) in benchmark contracts, have acceptably low false positive rates, and were deemed valuable enough to include as non-informational (medium severity) detectors.  The first mutants in prioritized rank exhibiting the issues, shown above, were the 2nd, 9th, and 12th non-statement-deletion mutants ranked for SmartCheck, out of over 800 such mutants.  Using our prioritization, it was possible to identify these issues by examining fewer than 20 unkilled mutants.  Without prioritization, on average a developer would have to look at more than 200, 80, and 400 mutants, respectively, to find instances of these problems.  Interestingly, the very fact that these instances are ``needles in a haystack'' among the mutants not killed by Slither means that the results in Figure \ref{fig:solidityvenn} and Table \ref{tab:scoresolidity} are almost unaltered by our improvements to Slither: our analysis is fairly robust to modest tool improvements, unless added detectors account for a large number of mutants not detected by the tool.  Adding such detectors will also only improve mutation ratio if they do not add many false positives.  Substantial changes in results therefore require adding very effective (for mutants) detectors that seldom trigger for correct code (or at least trigger much less than for mutants).  ``Cheating'' with respect to a mutation benchmark is thus, we hope, difficult without actual major tool improvements.
 
 There were 92 separately ranked statement deletion mutants also.  These, however, could all be ignored, as they were almost entirely duplicates related to the missing-return statement detector.  If this detector were not already present as a private Slither detector, it would also be a good candidate for addition to the tool.  Our three submitted detectors were not present as private detectors, and only one (the type-based tautology detector) had even been identified, via a GitHub issue, as a potential improvement (and only in the private version of Slither).  Combining statement deletion mutants with other mutants only moved the mutants we used down to 3rd, 11th, and 14th positions.  By default we rank statement deletions separately, since such mutants are usually easier to understand and either note as important or dismiss, and in testing (but not static analysis) they are likely to be the most critical faults not detected.
 
@@ -163,7 +150,7 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
 
 
 \begin{figure}
-  \includegraphics[width=0.6\columnwidth]{java.png}
+  \includegraphics[width=0.4\columnwidth]{java.png}
   \caption{Mutants killed by Java static analysis tools.}
   \label{fig:javavenn}
 \end{figure}
@@ -175,39 +162,25 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
     \hline
     \hline
     SpotBugs & 28.93 & 14.00 & 0.07 & 0.07 & 0.002 \\
+    Clean (3) & - & - & 0.05 & 0.06 - \\
     \hline
     PMD & 53.73 & 32.00 & 0.07 & 0.07 & 0.001 \\
+    Clean (0) & - & - & - & - & - \\
     \hline
     Infer & 11.60 & 3.00 & 0.00 & 0.00 &  0.000 \\
+    Clean (6) & - & - & 0.00 & 0.00 \\
     \hline
   \end{tabular}
   \caption{Java tool results over all projects.}
   \label{tab:scorejava}
 \end{table}
 
-\begin{table}
-  \begin{tabular}{l|r|r|r}
-    & & \multicolumn{2}{|c|}{} \\
-    & \# Clean & \multicolumn{2}{|c|}{Mutation Score} \\
-    Tool & Projects & Mean & Median \\
-    \hline
-    \hline
-    SpotBugs & 3 & 0.05 & 0.06 \\
-    \hline
-    PMD & 0 & N/A & N/A \\
-    \hline
-    Infer & 6 & 0.00 & 0.00 \\
-    \hline
-  \end{tabular}
-  \caption{Java tool clean project results.}
-  \label{tab:cleanjava}
-\end{table}
 
-Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools, and Tables \ref{tab:scorejava} and \ref{tab:cleanjava} provide numeric results for projects and clean projects, respectively.
+
+Figure \ref{fig:javavenn} shows the mutants killed by the Java analysis tools, and Table \ref{tab:scorejava} provides numeric results for projects and clean projects, respectively.
 
 In terms of {\bf RQ1}, the raw kills results suggest there is considereable value in running both SpotBugs and PMD.  Both produce a large number of unique detections, though PMD produces about 20\% more than SpotBugs.
 Infer on the other hand, is only able to detect two mutants, but these are unique.  Unfortunately, these mutants only served to indicate that we were actually running Infer in such a way that it \emph{could} detect problems:  both were concurrency warnings, but the code change in both cases was simply removing a (semantically inoperative) {\tt \@Override} annotation.  It may be that the diff sizes in our code were simply too small for Infer's approach.
-
 {\bf RQ2} is also answered in the affirmative.  While the raw kills for SpotBugs are not as good as for PMD, it produced fewer findings, giving it a mutant ratio approximately twice that of PMD.
 
 We note that SpotBugs crashed for many more Java programs than PMD and Infer (neither crashed for any original file in our experiments).  SpotBugs ``failed to detect'' 23,000 of the mutants because it did not process the un-mutated file for 383 files, over 12 of the 15 projects---just over 23\% of the 1,664 total files.  Removing files for which SpotBugs failed, however, did not dramatically change results; SpotBugs' mean mutation score rose to 0.09, and mutant ratio rose to 0.003, but PMD's mean score rose to 0.10, and mutant ratio to 0.002.
@@ -229,8 +202,7 @@ For {\bf RQ3}, to our knowledge there is no academic comparison of all three too
 
 For {\bf RQ4} there were very few clean projects, but the mutation scores for Infer were unchanged, and for SpotBugs they were worse.  We see no evidence that non-clean code is a source of degradation in mutation detection.
 
-
-For Java, again, the large majority of mutants we inspected for {\bf RQ5}, where at least one tool detected the mutant and at least one tool did not detect it were definitely meaningful.  In particular, for Java, the large majority of mutants involved either deleted method calls or changes to conditionals (e.g., {\tt == null} to {\tt != null} that would clearly introduce potential null pointer exceptions (NPEs), and such a possible NPE was the produced finding.  While the differences between Solidity tools were often due to different detectors, the Java differences seemed mostly rooted in analysis engine methods; all tools aim to warn about potential NPEs.  Because the number of mutants we could examine and understand was smaller, we are less confident in making a probabilistic estimate than with Solidity, but it was clear the basis of the comparison was primarily realistic faults, which some tools detected and others did not.
+For Java, again, the large majority of mutants we inspected for {\bf RQ5}, where at least one tool detected the mutant and at least one tool did not detect it were definitely meaningful.  In particular, for Java, the large majority of mutants involved either deleted method calls or changes to conditionals (e.g., {\tt == null} to {\tt != null}) that would clearly introduce potential null pointer exceptions (NPEs), and such a possible NPE was the produced finding.  While the differences between Solidity tools were often due to different detectors, the Java differences seemed mostly rooted in analysis engine methods; all tools aim to warn about potential NPEs.  Because the number of mutants we could examine and understand was smaller, we are less confident in making a probabilistic estimate than with Solidity, but it was clear the basis of the comparison was primarily realistic faults, which some tools detected and others did not.
 
 \subsection{Python Tools}
 
@@ -246,7 +218,7 @@ For Python, we analyzed the top 25 GitHub projects by our criteria (see above), 
 
 
 \begin{figure}
-  \includegraphics[width=0.6\columnwidth]{python.png}
+  \includegraphics[width=0.4\columnwidth]{python.png}
   \caption{Mutants killed by Python static analysis tools.}
   \label{fig:pythonvenn}
 \end{figure}
@@ -258,40 +230,25 @@ For Python, we analyzed the top 25 GitHub projects by our criteria (see above), 
     \hline
     \hline
     Pylint & 2.24 & 1.00 & 0.22 & 0.20 & 0.097 \\
+    Clean (0) & - & - & - & - & - \\
     \hline
     pyflakes & 2.4 & 1.00 & 0.03 & 0.00 & 0.012 \\
+    Clean (12) & - & - & 0.02 & 0.00 & - \\
     \hline
     PyChecker & 0.56& 0.00 & 0.10 & 0.00 &  0.183 \\
+    Clean (21) & - & - & 0.01 & 0.00 \\
     \hline
   \end{tabular}
   \caption{Python tool results over all projects.}
   \label{tab:scorepython}
 \end{table}
 
-\begin{table}
-  \begin{tabular}{l|r|r|r}
-    & & \multicolumn{2}{|c|}{} \\
-    & \# Clean & \multicolumn{2}{|c|}{Mutation Score} \\
-    Tool & Projects & Mean & Median \\
-    \hline
-    \hline
-    Pylint & 0 & N/A & N/A \\
-    \hline
-    pyflakes & 12 & 0.02 & 0.00 \\
-    \hline
-    PyChecker & 21& 0.01 & 0.00 \\
-    \hline
-  \end{tabular}
-  \caption{Python tools clean project results.}
-  \label{tab:cleanpython}
-\end{table}
 
-
-Figure \ref{fig:pythonvenn} shows the mutants killed by the Python analysis tools, and Tables \ref{tab:scorepython} and \ref{tab:cleanpython} provide numeric results for projects and clean projects, respectively.
+Figure \ref{fig:pythonvenn} shows the mutants killed by the Python analysis tools, and Table \ref{tab:scorepython} provides numeric results for projects and clean projects, respectively.
 
 For {\bf RQ1}, Pylint and pyflakes both killed more than 15,000 mutants killed by no other tool; Pylint killed more mutants, but the relative difference was much smaller than in our Solidity or Java analysis.  It is clear both tools are well worth using, assuming these are not false positives.  Pyflakes' mutation score is lower than unique kills might suggest because it has almost no overlap with the other two tools.  It is doing something different.
 
-The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes, in fact, and better than Pylint, because while it killed fewer mutants, it also produced fewer findings by far, overall.  PyChecker would be a good choice for quick and dirty analysis of code on the fly, perhaps, in that it had excellent mutation scores for some programs (hence a high mean) but is relatively ``quiet'' compared to the other tools.  However, its very low median mutation score is troubling; it may simply not work for some code.  A combination of pyflakes and Pylint seems safer, though adding the relatively low-findings PyChecker seems likely to have little cost.  For Python, we see that all of our measures are required to get a good picture of the tools.
+The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes, in fact, and better than Pylint, because while it killed fewer mutants, it also produced fewer findings by far, overall.  PyChecker would be a good choice for quick and dirty analysis of code on the fly, perhaps, in that it had excellent mutation scores for some programs (hence a high mean) but is relatively ``quiet'' compared to the other tools.  However, its very low median mutation score is troubling; it may simply not work for some code.  A combination of pyflakes and Pylint seems safer, though adding the relatively low-findings PyChecker seems likely to have little cost.  For Python, all of our measures are required to get a good picture.
 
 \begin{figure}
   {\scriptsize
