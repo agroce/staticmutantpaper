@@ -34,7 +34,7 @@ We could have used a set of high-transaction contracts, or known-important contr
 \subsubsection{Analysis Results}
 
 \begin{figure}
-  \includegraphics[width=0.4\columnwidth]{solidity.png}
+  \includegraphics[width=0.35\columnwidth]{solidity.png}
   \caption{Mutants killed by Solidity static analysis tools.}
   \label{fig:solidityvenn}
 \end{figure}
@@ -63,11 +63,11 @@ We could have used a set of high-transaction contracts, or known-important contr
 
 Figure \ref{fig:solidityvenn} shows the mutants killed by the Solidity analysis tools.  Table \ref{tab:scoresolidity} provides numeric details of the results, including the \emph{ratio} for each tool, adjusting its mutation scores by its' general tendency to produce findings.  The second row for each tool shows the number of contracts for which it reported no findings, and the mutation scores over those contracts, only. A user examining these results would suspect that Slither and SmartCheck are both useful tools, and should likely both be applied in a high-risk security-sensitive context like smart contract development.  A user might also suspect that the large number of findings produced, and smaller number of mutants killed, for Securify, means that whether to apply Securify is a more difficult decision.  On the one hand, Securify does detect nearly as many mutants it alone can identify as SmartCheck.  The large number of findings, and very bad mutant ratio, however, lead us to suspect that many of these ``detected'' mutants are false positives (or, at least, that the problem is not the one Securify identifies).  Extracting the signal from Securify's noise will be difficult.  We also note that while running Slither and SmartCheck on all 46,769 valid mutants was relatively quick (it took about 6 days sequential compute time for Slither and 3 days for SmartCheck, i.e., about 5-15 seconds per mutant for both tools), Securify often required many hours to analyze a mutant, and frequently required a few days to analyze a mutant; the full analysis required over three months of compute time.
 
-For our research questions, {\bf RQ1} is clearly answered in the affirmative.  Figure \ref{fig:solidityvenn} shows that the tools address quite different problems, with all tools reporting far more uniquely detected mutants than mutants in common with other tools.  There are only 18 mutants detected by all tools, all of them involving replacement of {\tt msg.sender} (the caller of a smart contract, which may be another smart contract) with {\tt tx.origin} (the original initiator of a sequence of blockchain calls, a ``human'' account).  Use of {\tt tx.origin} is usually a bad idea, can lead to incorrect behavior, and may not be relied on to be meaningful at all in future versions of Ethereum (\url{https://ethereum.stackexchange.com/questions/196/how-do-i-make-my-dapp-serenity-proof}).  
+For our research questions, {\bf RQ1} is clearly answered in the affirmative.  Figure \ref{fig:solidityvenn} shows that the tools address quite different problems, with all tools reporting far more uniquely detected mutants than mutants in common with other tools.  There are only 18 mutants detected by all tools, all of them involving replacement of {\tt msg.sender} (the caller of a smart contract, which may be another smart contract) with {\tt tx.origin} (the original initiator of a sequence of blockchain calls, a ``human'' account).  Use of {\tt tx.origin} is often (though not always) a bad idea, and can lead to incorrect behavior, so it is not surprising tools all recognize some misuses of it.
 
 {\bf RQ2} is also answered in the affirmative.  Counting findings for un-mutated code might suggest that Securify is the best tool, by a wide margin, but in the context of its near-zero mutant ratio, we must suspect that many of the warnings are false positives.  Slither has the best mutant ratio, but the margin between it and SmartCheck confirms that both tools likely provide value.
 
-For {\bf RQ3}, there are only a few tool comparisons in the literature; this is probably due to the fast-moving nature of the blockchain analysis world; the oldest of these tools' publication dates is 2018.  The most extensive is that of Durieux et al. \cite{durieux2019empirical}.  Slither detected 17\% of known vulnerabilities in their analysis, vs. 11\% for SmartCheck and 9\% for Securify. Slither and SmartCheck were also among the four (out of 9) tools that detected vulnerabilities in the most categories; Securify was not.  The overall recommendation of Durieux et al. was to use a combination of Slither and Mythril \cite{mythril-code} for contract analysis.  Parizi et al. \cite{Parizi} also offer a ranking of tools, and determined that SmartCheck was the most effective, and far more so than Securify; unfortunately, they did not include Slither in their set of evaluated tools.
+For {\bf RQ3}, there are only a few tool comparisons in the literature; this is probably due to the fast-moving nature of the blockchain analysis world; the oldest of these tools' publication dates is 2018.  The most extensive is that of Durieux et al. \cite{durieux2019empirical}, though it unfortunately was unable to provide anything other than an implicit look at false positives, somewhat limiting its practicality.  Slither detected 17\% of known vulnerabilities in their analysis, vs. 11\% for SmartCheck and 9\% for Securify. Slither and SmartCheck were also among the four (out of 9) tools that detected vulnerabilities in the most categories; Securify was not.  The overall recommendation of Durieux et al. was to use a combination of Slither and Mythril \cite{mythril-code} for contract analysis.  Parizi et al. \cite{Parizi} also offer a ranking of tools, and determined that SmartCheck was the most effective, and far more so than Securify; unfortunately, they did not include Slither in their set of evaluated tools.
 
 The Slither paper \cite{slither} also provides an evaluation of all three tools.  Their findings counts differ from ours because of different choices (we threw out merely informational results), but these are unrelated to mutation analysis, in any case.  The evaluation only considered reentrancy faults \cite{SurveyAttacks,FC20} (which are sometimes, but only rarely, introduced by mutants).  For reentrancy, Slither performed best on two real-world large contracts, finding subtle bugs in both, SmartCheck detected the problem in one of the two, and Securify detected neither.  For a set of 1,000 contracts, SmartCheck had a high false positive rate (over 70\%) but detected more actual reentrancies (209) than Slither (99) or Securify (6).  On the other hand, Slither's low false positive rate of 11\%  makes its results possibly more useful in practice.
 
@@ -150,7 +150,7 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
 
 
 \begin{figure}
-  \includegraphics[width=0.4\columnwidth]{java.png}
+  \includegraphics[width=0.35\columnwidth]{java.png}
   \caption{Mutants killed by Java static analysis tools.}
   \label{fig:javavenn}
 \end{figure}
@@ -218,7 +218,7 @@ For Python, we analyzed the top 25 GitHub projects by our criteria (see above), 
 
 
 \begin{figure}
-  \includegraphics[width=0.4\columnwidth]{python.png}
+  \includegraphics[width=0.35\columnwidth]{python.png}
   \caption{Mutants killed by Python static analysis tools.}
   \label{fig:pythonvenn}
 \end{figure}
