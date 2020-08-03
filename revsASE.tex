@@ -1,0 +1,134 @@
+** Metareview **
+Comment @A1 by Reviewer B
+---------------------------------------------------------------------------
+*** META-REVIEW ***
+
+All reviewers agree that applying mutation testing in the context of assessing different SA tools is very interesting and novel. Furthermore, the evaluation is impressive. The paper is well-written, but sometimes not see easy to understand. In particular, it could be more self-contained.
+
+The reviewers also found that quite a few assumptions are made. In particular, it is really so that mutants introduce faults that static analysis tools should detect. This assumption needs to be strengthened, as it is the basis of your approach. The results need more in-depth analysis to reveal the actual interesting differences among SA tools.
+
+Further comments are in the individual reviews. We hope that the feedback provided enables you to improve your manuscript.
+
+
+** Reviews **
+Review #195A
+===========================================================================
+
+Overall merit
+-------------
+2. Weak reject
+
+Reviewer expertise
+------------------
+3. I have read key papers on this topic, it is close to my core expertise
+
+Paper summary
+-------------
+This paper proposes to use mutation analysis (akin to mutation testing) to differentially compare the effectiveness of multiple static analysis tools. The paper applies to some input programs syntactic mutation operators. The main hypothesis is that such mutations have the tendency to introduce bugs that such tools should detect, and the idea of the paper is thus that a tool tends to be more effective when it signals additional warnings, i.e., "kills mutants", on mutated (and thus assumed to be faulty code). The study produces mutants using some Universal Mutator tool and compares different tools for Solidity, Java and Python. The paper concludes that this methodology reveals interesting insights about the relative usefulness of the tools and even allows one to find optimization potential for those tools.
+
+Comments for author
+-------------------
+Significance and Novelty:
+The paper is written in very good English. Overall I like this paper's idea. Surely it is desirable to measure the relative effectiveness of different static analyzers. I also surely can relate to the challenges involved. There has been little work in this area, so there is much room to make good contributions.
+
+Reproducibility:
+The paper does provide some raw data, however it is very limited. For instance, there seems to be no actual code for the mutants for Java, which I would have loved to take a look at to see whether they make any sense. Without that data it is hard to judge to what extent the data drawn from those mutants is reliable.
+
+Presentation:
+The presentation is mostly good.
+
+General remarks:
+Overall I really like the idea of this paper. Testing static analyzers is important and has seen to little work. Yet, some concerns remain.
+
+As written above, my major concern is that even with the available data I find it hard to answer the following questions: For instance, is it really true that the mutants introduce faults that static analysis tools should detect? And the mutants that are killed, are any of those true positives or are we just seeing noise over noise over noise? Currently the paper comprises no qualitative elements whatsoever, none of the warnings were ever inspected to see what their nature is, let alone whether whether they are true or false. Hence, the picture that this study paints is a very foggy one. And even the provided data seems to make it impossible for reviewers to conduct such a qualitative analysis. And in any case, it is the authors who should have conducted it in the first place.
+
+In result, I find it impossible to judge whether any of the produced results are meaningful. This will heavily depend on the exact static analyses and on the exact mutation operators. However, the paper fails to give any deeper insights into those.
+
+The paper states that the Universal Mutator tool has been extensively tuned for Solidity but not for the other languages. This greatly limits the validity of the experiments.
+In the Threats to Validity, the paper acknowledges that one threat is the low number of selected projects / contracts. It would have been interesting to see whether any of the detection ratios differ from one program to another. Again, also in this instance, the paper is missing out on providing potentially insightful qualitative information.
+
+I realize that it might be hard to cramp all such information into 10 pages, but then maybe this should really actually be a longer journal paper.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #195B
+===========================================================================
+
+Overall merit
+-------------
+2. Weak reject
+
+Reviewer expertise
+------------------
+2. I have passing familiarity with this topic
+
+Paper summary
+-------------
+The paper introduces the idea that mutation testing can be used to compare static analysis tools. In particular, it makes a case for not comparing the base case of programs (vanilla programs), but rather the differential performance of static analysis tools when mutants are applied. In the evaluation of the paper, this is done for Java, Python and Solidity smart contracts.
+
+Comments for author
+-------------------
+The core idea of this paper is simple, yet brilliant. A differential analysis of static analysis tools based on introducing mutants. I truly want to applaud the authors for the idea. I also agree with the authors that this kind of analysis is difficult to perform, yet the way that they carry it out actually has a lot of worth, both for the research community, but eventually also for practitioners. It is an easy way to inform both of the strengths and weaknesses of the static analysis tools.
+
+That being said, I also found the paper to be quite difficult to access, meaning that one does have to have quite a bit of background in understanding what the tools are Solidify, Slither, Universital Mutator tool, etc. The paper is not really self-contained in that respect.
+
+Overall, I would rather have seen a bit more background and explanation and perhaps a less extensive analysis. While I do want to applaud the authors for carrying out an analysis of Solidy, Java and Python (really great!), I would have liked to see a bit more depth in both context and analysis in some parts. (I will try to detail below)
+
+What I am wondering, and what I also don't completely understand with regard to Solidify, but what I do know about Java and Python: it seems that static analysis tools report a combination of functional defects and maintainability defects. What exactly is your analysis targeting? Can we assume that mutants target both? Intuitively I would say that static analysis tools mainly due maintainability defect analysis, and less of functional defect reporting. How does this play into the strength of mutation analysis?
+
+There is interesting work by Buckers et al. who present a visualisation tool to compare static analysis tools, albeit in a much more fine-grained (and manual) way that you are doing in this paper!
+
+A key issue that I have with the paper in its current guise is the mutation operators that are applied. From the paper I do not complete understand the role of the "Universal Mutator" tool, but what I do know from mutation testing research is that it is crucial to understand what mutation operators are being used in an experiment. That is the only way to fully grasp what the technique can do. Unfortunately, in this paper there is absolutely no information on the mutation operators that you have used. Yet, knowing this is quite essential to really understand the power of your approach! (especially also in relation to the question of functional versus maintainability defects). This needs to be clarified!
+
+The link in the readme.md to the release is broken. I did find it on GitHub after some clicking... While the raw data seems to be fairly complete, it is not that easy to interpret (contrary to the statement in the readme file). Reconstructing the exact mutations seems difficult to impossible to do with my understanding of it.
+
+"Such faults may be disproportionately present in mutants vs. real code. However, we consider this unlikely" --> why do you consider this unlikely?
+
+Please give a short intro to the University Mutator tool.
+
+"findings produced by tools were relevant to the nature of the fault" --> what is "relevant" in this context?
+
+"Interestingly, the very fact that these instances are "needles in a haystack" --> what does that say about the evaluation?
+
+What is a private detector?
+
+What are "obviously interesting mutants"?
+
+"Because the Universal Mutator does not "know" Java syntax, and Java is very verbose, the Java compiler rejected a large number of the generated mutants" --> this really calls for a more extensive explanation + why did you not use something such as PIT?
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #195C
+===========================================================================
+
+Overall merit
+-------------
+2. Weak reject
+
+Reviewer expertise
+------------------
+4. I work/publish on this paper's topic
+
+Paper summary
+-------------
+The paper presents a novel approach that utilizes mutation testing for evaluating and comparing different static analysis (SA) tools. In particular, for each generated mutant, if one static analysis tool reports more warnings than the unmutated code, this mutant is considered killed. The mutation score is defined as the percentage of killed mutants of all the mutants. Based on the different sets of killed mutants by each SA tool, the expected users (e.g., developers) can clearly notice the differences between multiple SA tools. The evaluation is performed to assess two sets of SA tools, one targeting the security issues in smart contract programs, and the other one targeting code antipatterns in python programs.
+
+Comments for author
+-------------------
+Strength and Weakness
++ The idea of applying mutation testing in the context of assessing different SA tools is very interesting and novel.
++ The evaluation is impressive. including six SA tools and applying the SA tools on a reasonable set of smart contract and python projects.
++ Overall, the paper is well-written and easy to understand. 
+- The results need more in-depth analysis to reveal the actual interesting differences among SA tools.
+- The assumptions behind mutation testing should be carefully revisited in this context. Such revisits may impact the methodology of this work.
+
+Detailed Comments
+* The paper is well motivated. It is not easy to go over numerous detected warnings to assess differences among SA tools. However, by doing mutation testing, the differences observed are caused by multiple reasons. First, different SA tools may implement a different set of antipatterns. But such differences are not very interesting since one can go through the list of target antipatterns by an SA tool and perform a manual comparison. Although the manual comparison takes effort, but this paper also requires manual effort to investigate the killed mutants. In addition, cross-checking the list of antipatterns will yield a complete list of differences in this category, which is a more comprehensive set compared to what this paper can find. Second, SA tools may have different implementations for the same antipattern. I think this category is more interesting. I suggest the authors to consider separating the differences in categories and focus on the more interesting ones.
+
+* One of the assumptions of mutation testing is that the original program is almost correct, slightly modifying the program will introduce a bug. If test cases fail to detect this mutant, it indicates insufficiencies in test cases. I do not see this assumption holds in the context of this paper. So if a program is lightly mutated, even it is not killed by one SA tool, it does not mean the SA tool is not efficient since this mutant can still be antipattern-free. I think the paper and the approach can benefit from a discussion on the assumptions and may improve the design of the mutation testing.
+
+* Overall, the paper is well-written. One caveat is that the introduction is quite lengthy and contains many technical details and arguments on design choices (Section 1.1). The authors could consider making the introduction concise and putting such details in a later section (e.g., method). The definition of mutation ratio is quite embedded in the introduction, which is far away from the RQ results. This creates difficulty in reading. Another caveat is that the paper does not have a standalone method section yet. Putting part of the introduction and Section 2 in a methodology section will have a central location for methodology, Also it would help the readers better understand the contents by adding an overview (i.e., workflow) of the mutation differential analysis, and a summary of defined metrics. Also, the authors can consider moving the motivating example (Section 1.2) forefront, i.e., before Section 1.1, to make the flow easier to understand.
