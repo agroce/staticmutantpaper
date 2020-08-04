@@ -34,6 +34,7 @@ We could have used a set of high-transaction contracts, or known-important contr
 \subsubsection{Analysis Results}
 
 \begin{figure}
+  \centering
   \includegraphics[width=0.35\columnwidth]{solidity.png}
   \caption{Mutants killed by Solidity static analysis tools.}
   \label{fig:solidityvenn}
@@ -86,35 +87,31 @@ Based on the differential mutation analysis, we identified three low-hanging fru
       {\bf Mutant showing Boolean constant misuse.}
 
     
-\noindent \begin{code}
- 0x598ab825d607ace3b00d8714c0a141c7ae2e6822\_Vault.mutant.275.sol:
- if (!p.recipient.send(p.amount)) \{  // Make the payment
- ==>          if (true) \{  // Make the payment
- if (true) \{  // Make the payment
-      \end{code}
+\noindent
+\begin{verbatim}
+  if (!p.recipient.send(p.amount)) \{  // Make the payment
+  ==>          if (true) \{  // Make the payment
+  if (true) \{  // Make the payment
+\end{verbatim}
+}
 
-      }
-
-      {\scriptsize
-              {\bf Mutant showing Type-based tautologies.}
-\begin{code}
- 0x968815CD73647C3af02a740a2438D6f8219e7534\_TTPresale.mutant.311.sol:
- require(nextDiscountTTMTokenId6 >= 361 \&\& nextDiscountTTMTokenId6 <= 391);
- ==>  ...361...==>...0...
- require(nextDiscountTTMTokenId6 >= 0 \&\& nextDiscountTTMTokenId6 <= 391);
-      \end{code}
-      }
+ {\scriptsize
+ {\bf Mutant showing Type-based tautologies.}
+\begin{verbatim}
+  require(nextDiscountTTMTokenId6 >= 361 \&\& ...);
+  ==>  ...361...==>...0...
+  require(nextDiscountTTMTokenId6 >= 0 \&\& ...);
+\end{verbatim}
+}
 
 
       {\scriptsize
       {\bf Mutant showing Loss of precision.}        
-\begin{code}
- 0x534ccee849a688581d1b0c65e7ff317ed10c5ed3\_NametagToken.mutant.480.sol:
- byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
- ==>  ...*...==>.../...
- byte char = byte(bytes32(uint(x) * 2 ** (8 / j)));
-      \end{code}
-
+\begin{verbatim}
+  byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+  ==>  ...*...==>.../...
+  byte char = byte(bytes32(uint(x) * 2 ** (8 / j)));
+\end{verbatim}
 }
         \caption{Examples of mutants leading to new detectors.}
        \label{fig:newdetect}
@@ -150,6 +147,7 @@ For Java and Python, we did not have to worry about invalidating tool improvemen
 
 
 \begin{figure}
+  \centering
   \includegraphics[width=0.35\columnwidth]{java.png}
   \caption{Mutants killed by Java static analysis tools.}
   \label{fig:javavenn}
@@ -218,6 +216,7 @@ For Python, we analyzed the top 25 GitHub projects by our criteria (see above), 
 
 
 \begin{figure}
+  \centering
   \includegraphics[width=0.35\columnwidth]{python.png}
   \caption{Mutants killed by Python static analysis tools.}
   \label{fig:pythonvenn}
