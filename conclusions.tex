@@ -2,15 +2,11 @@
 
 In this paper, we showed that program mutants can be used as a proxy
 for real faults, to compare (and motivate improvements to) static
-analysis tools.  Mutants are attractive in that changing a mostly
-correct program usually introduces a bug into it; this is the basis of
-mutation testing, after all, and a large body of work supports the
+analysis tools.  Mutants are attractive in that a large body of work supports the
 claim that at least 60-70\% of mutants are fault-inducing.   This
-means we can assume mutants are faulty, and escape the
+allows us to assume \emph{detected} mutants are faulty, and escape the
 ground-truth/false positive problem that makes comparing static
-analysis tools so labor-intensive.  Our approach cannot identify precision
-problems directly, but combined with finding counts for un-mutated
-code, can compute a mutant ratio that implicates imprecise tools.  We
+analysis tools so labor-intensive.   We
 evaluated 9 popular static analysis tools, for Solidity smart contracts, Java,
 and Python, and offer advice to users of these tools.  Our mutation
 results strongly confirm the wisdom of using multiple tools; with the
