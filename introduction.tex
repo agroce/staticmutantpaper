@@ -71,16 +71,16 @@ This paper offers the following contributions:
 
  While there are certainly limitations to using differential mutation analysis to compare and extend static analysis tools, the method scales to basing comparisons on large numbers of real software source files and very large numbers of faults, but still has some of the advantages of humans establishing ground truth for tool findings.
 
-\section{Method}
+\section{Differential Mutation Analysis}
 
 The proposed approach is simple in outline:
 
 \begin{enumerate}
 \item Run each tool on the unmutated source code target(s), and determine the \emph{baseline}: the number of (non-informational/stylistic) findings produced.
 \item Generate mutants of the source code and run each tool on each mutant.  Consider a mutant killed if the number of findings for the mutated code is greater than the number for the baseline, un-mutated code.
-\item Compute, for each tool, the \emph{mutant ratio}:  the mutation score ($\frac{|\mathit{killed}|}{|\mathit{mutants}|}$) divided by the mean number of baseline findings.
+\item Compute, for each tool, the \emph{mutant ratio}:  the mutation score ($\frac{|\mathit{killed}|}{|\mathit{mutants}|}$) divided by (mean) baseline.
 \item (Optional): Discard all mutants not killed by at least one tool and all mutants killed by all tools.  What remains allows \emph{differential} analysis.
-\item (Optional): Examine mutants in the difference in \emph{prioritized} order to qualitatively understand tool differences.
+Examine the remaining mutants in the difference in \emph{prioritized} order to qualitatively understand tool differences, or improve a tool.
 \end{enumerate}
 
 The most important step here is the computation of the \emph{mutant ratio}, which tells us about the ability of a tool to produce findings \emph{for mutants}, relative to its tendency to produce findings in general.  If a tool has a tendency to produce large numbers of findings compared to other tools, and this is paired with a tendency to detect more mutants as well, then the tool will not be penalized for producing many findings.  Assuming that real faults are relatively rare in the original, un-mutated code, the best result and best (highest) mutant ratio will be for a tool that produces comparatively few findings for un-mutated code, but detects a larger portion of mutants than other tools; the worst result will be a tool that produces lots of findings, but detects few mutants.  We will actually see some examples of this worst case.
