@@ -79,6 +79,9 @@ with open("Python.csv") as javaResults:
     print("Pylint but not Pychecker:", Pylint_not_Pychecker)
     print("Pychecker but not Pylint:", Pychecker_not_Pylint)    
 
+    toolIssues = {}
+    toolScores = {}    
+    
     print()
     print()
     print(len(files), "FILES")
@@ -104,12 +107,31 @@ with open("Python.csv") as javaResults:
                     allCleanCount += 1
                     allCleanScores.append(score)
         print("ISSUES:", scipy.mean(issues), scipy.median(issues))
-        print("SCORES:", scipy.mean(scores), scipy.median(scores))
+        toolIssues[tool] = issues
+        toolScores[tool] = scores        
+        print("SCORES:", scipy.mean(scores), scipy.median(scores), scipy.std(scores))
         print("RATIO:", scipy.mean(scores)/scipy.mean(issues))
         print("CLEAN:", cleanCount)
         print("CLEAN SCORES:", scipy.mean(cleanScores), scipy.median(cleanScores))
         print("#ALL CLEAN:", allCleanCount),
         print("ALL CLEAN SCORES:", scipy.mean(allCleanScores), scipy.median(allCleanScores))
 
+for tool1 in ["Pylint", "Pychecker", "Pyflakes"]:
+    for tool2 in ["Pylint", "Pychecker", "Pyflakes"]:
+        if tool1 > tool2:
+            print(tool1, "VS", tool2)
+            diffAmt = []
+            for i in range(0, len(toolScores[tool1])):
+                diffAmt.append(toolScores[tool1][i]-toolScores[tool2][i])
+            print("RAW:", tool1,"BETTER THAN",tool2,len(list(filter(lambda x: x > 0, diffAmt))))
+            diffAmt = []
+            for i in range(0, len(toolScores[tool1])):
+                t1Score = toolScores[tool1][i] / max(1,toolIssues[tool1][i])
+                t2Score = toolScores[tool2][i] / max(1,toolIssues[tool2][i])                
+                diffAmt.append(t1Score-t2Score)
+            print("RATIO:", tool1,"BETTER THAN",tool2,len(list(filter(lambda x: x > 0, diffAmt))))
+            print(len(toolScores[tool1]))
+            print("="*40)
+        
 print(projects, len(projects))
 print(Mutant-1)

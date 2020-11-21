@@ -122,6 +122,10 @@ with open("Java.csv") as javaResults:
     print()
     print(len(files), "FILES")
     print()
+
+    toolIssues = {}
+    toolScores = {}    
+    
     for tool in ["spotbugs", "PMD", "Infer"]:
         print()
         print("="*48)
@@ -142,13 +146,38 @@ with open("Java.csv") as javaResults:
                 if (files[f]["spotbugs_issues"] == 0) and (files[f]["PMD_issues"] == 0) and (files[f]["Infer_issues"] == 0):
                     allCleanCount += 1
                     allCleanScores.append(score)
-        print("ISSUES:", scipy.mean(issues), scipy.median(issues))
-        print("SCORES:", scipy.mean(scores), scipy.median(scores))
+        print("ISSUES:", scipy.mean(issues), scipy.median(issues), scipy.std(issues))
+        toolIssues[tool] = issues
+        toolScores[tool] = scores
+        print("SCORES:", scipy.mean(scores), scipy.median(scores), scipy.std(scores))
         print("RATIO:", scipy.mean(scores)/scipy.mean(issues))
         print("CLEAN:", cleanCount)
         print("CLEAN SCORES:", scipy.mean(cleanScores), scipy.median(cleanScores))
         print("#ALL CLEAN:", allCleanCount),
         print("ALL CLEAN SCORES:", scipy.mean(allCleanScores), scipy.median(allCleanScores))
+
+print()
+print()
+        
+for tool1 in ["spotbugs", "PMD", "Infer"]:
+    for tool2 in ["spotbugs", "PMD", "Infer"]:
+        if tool1 > tool2:
+            print(tool1, "VS", tool2)
+            diffAmt = []
+            for i in range(0, len(toolScores[tool1])):
+                diffAmt.append(toolScores[tool1][i]-toolScores[tool2][i])
+            print("RAW:", tool1,"BETTER THAN",tool2,len(list(filter(lambda x: x > 0, diffAmt))))
+            diffAmt = []
+            for i in range(0, len(toolScores[tool1])):
+                t1Score = toolScores[tool1][i] / max(1,toolIssues[tool1][i])
+                t2Score = toolScores[tool2][i] / max(1,toolIssues[tool2][i])                
+                diffAmt.append(t1Score-t2Score)
+            print("RATIO:", tool1,"BETTER THAN",tool2,len(list(filter(lambda x: x > 0, diffAmt))))
+            print(len(toolScores[tool1]))
+            print("="*40)
+
+print()
+print()
 
 print(projects, len(projects))
 print(Mutant-1)
