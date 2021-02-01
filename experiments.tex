@@ -26,7 +26,7 @@ Smart contracts are autonomous code instruments, usually operating on a blockcha
 
 \subsubsection{Static Analysis Tools Compared}
 
-We analyzed three well-known tools for static analysis of Solidity smart contracts: Slither \cite{slither}, SmartCheck \cite{smartcheck}, and Securify \cite{Securify}.  Slither, based on an SSA-based intermediate language (SlithIR \cite{slither}) is an open-source tool from Trail of Bits.  SmartCheck, developed by SmartDec, translates Solidity source directly to an XML-based representation, then uses \emph{XPath} patterns to define problems.  Securify, from SRI Systems Lab at ETH Zurich, works at the bytecode level, first parsing and decompiling contracts, then translating to \emph{semantic facts} in order to look for problems.
+We analyzed three well-known tools for static analysis of Solidity smart contracts: Slither \cite{slither}\footnote{pip version 0.6.1}), SmartCheck \cite{smartcheck}\footnote{github commit 17fb98d9759eebeca1f92d48be52b85a1f5d8b89}, and Securify \cite{Securify}\footnote{github commit 0ffde61b9527be70b147d3ab687f11993d99212b}.  Slither, based on an SSA-based intermediate language (SlithIR \cite{slither}) is an open-source tool from Trail of Bits.  SmartCheck, developed by SmartDec, translates Solidity source directly to an XML-based representation, then uses \emph{XPath} patterns to define problems.  Securify, from SRI Systems Lab at ETH Zurich, works at the bytecode level, first parsing and decompiling contracts, then translating to \emph{semantic facts} in order to look for problems.
 
 \subsubsection{Smart Contract Selection}
 
