@@ -213,65 +213,45 @@ We compared three widely used and well-known Python tools:  Pylint \url{https://
 
 \subsubsection{Project Selection}
 
-For Python, we analyzed the top 25 GitHub projects by our criteria (see above), due to the smaller size of Python projects.  These ranged in size from 3,377 LOC to 34,671 LOC, with a total size of just under 100 KLOC.  For Python, we were able to produce 167,511 valid mutants.
+For Python, we analyzed the top 25 GitHub projects by our criteria (see above), due to the smaller size of Python projects.  These ranged in size from 3,377 LOC to 34,671 LOC, with a total size of just under 100 KLOC.  We analyzed 158,418 valid mutants.
 
 \subsubsection{Analysis Results}
 
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.35\columnwidth]{python.png}
+  \includegraphics[width=0.35\columnwidth]{python_new.png}
   \caption{Mutants killed by Python static analysis tools.}
   \label{fig:pythonvenn}
 \end{figure}
 
 \begin{table}
-  \begin{tabular}{l|r|r|r|r|r}
-    & \multicolumn{2}{|c|}{Findings} & \multicolumn{2}{|c|}{Mutation Score}  & Mutant \\
-    Tool & Mean & Median & Mean & Median & Ratio\\
-    \hline
-    \hline
-    Pylint & 2.24 & 1.00 & 0.22 & 0.20 & 0.097 \\
-    Clean (0) & - & - & - & - & - \\
-    \hline
-    pyflakes & 2.4 & 1.00 & 0.03 & 0.00 & 0.012 \\
-    Clean (12) & - & - & 0.02 & 0.00 & - \\
-    \hline
-    PyChecker & 0.56& 0.00 & 0.10 & 0.00 &  0.183 \\
-    Clean (21) & - & - & 0.01 & 0.00 \\
-    \hline
-  \end{tabular}
-  \caption{Python tool results over all projects (old).}
-  \label{tab:scorepython}
+\begin{tabular}{l|r|r|r|r|r}
+& \multicolumn{2}{|c|}{Findings} & \multicolumn{2}{|c|}{Mutation Score} & Mutant \\
+Tool & Mean & Median & Mean & Median & Ratio\\
+\hline
+\hline
+Pylint & 10.63 & 5.50 & 0.31 & 0.34 & 0.03 \\
+Clean (4) & - & - & 0.49 & 0.47 & - \\
+\hline
+pyflakes & 1.46 & 0.00 & 0.14 & 0.12 & 0.09 \\
+Clean (14) & - & - & 0.14 & 0.12 & - \\
+\hline
+PyChecker & 11.6 & 0.00 & 0.01 & 0.00 & 0.00 \\
+Clean (4) & - & - & 0.00 & 0.00 & - \\
+\hline
+\end{tabular}
+\caption{Python tool results over all projects.}
+\label{tab:scorepython}
 \end{table}
 
-\begin{table}
-  \begin{tabular}{l|r|r|r|r|r}
-    & \multicolumn{2}{|c|}{Findings} & \multicolumn{2}{|c|}{Mutation Score}  & Mutant \\
-    Tool & Mean & Median & Mean & Median & Ratio\\
-    \hline
-    \hline
-    Pylint & 11.87 & 4.00 & 0.20 & 0.19 & 0.02 \\
-    Clean (3) & - & - & 0.09 & 0.11 & - \\
-    \hline
-    pyflakes & 1.52 & 0.00 & 0.08 & 0.06 & 0.05 \\
-    Clean (15) & - & - & 0.09 & 0.08 & - \\
-    \hline
-    MyPy & 3.00 & 3.00 & 0.05 & 0.03 &  0.02 \\
-    Clean (3) & - & - & 0.03 & 0.01 & - \\
-    \hline
-  \end{tabular}
-  \caption{Python tool results over all projects (new).}
-  \label{tab:scorepython}
-\end{table}
+Figure \ref{fig:pythonvenn} shows the mutants killed by the Python analysis tools, and Table \ref{tab:scorepython} provides numeric results for projects and clean projects, respectively.  At the project level, Pylint was better than pyflakes and PyChecker for 21 and 24 projects, respectively, by raw score; pyflakes was better than Pylint and PyChecker for 3 and 24 projects, respectively; PyChecker was never better than another tool by raw score.  Switching to ratio measures, Pylint was better than pyflakes and PyChecker for 11 and 23 projects, respectively; pyflakes was better than Pylint and PyChecker for 13 and 24 projects, respectively.  PyChecker was better than Pylint for one project, by ratio.  
+Standard deviations in mutation scores were sometimes high for Python:  0.17 for Pylint, 0.08 for pyflakes, and 0.01 for PyChecker.
 
+For {\bf RQ1}, there is a clear difference between tools.  Pylint uniquely kills almost an order of magnitude more mutants than the next-best tool.  There is a large overlap between Pylint and pyflakes, while PyChecker is both much less effective and doing something fairly different than the other tools.  From the diagram, one might think that pyflakes acts, to some extent, as a less verbose ``subset'' of Pylint, in that most mutants detected by pyflakes are also detected by Pylint (however, the nearly 3,500 killed mutants unique to pyflakes suggest it is a useful tool, perhaps most useful after problems also reported by Pylint are fixed).  PyChecker performs poorly in part because it crashed (due to changes in Python since the last update to the tool) for 19 of the 25 projects; however, as the clean scores show, it also performed poorly on programs where it worked.
 
-Figure \ref{fig:pythonvenn} shows the mutants killed by the Python analysis tools, and Table \ref{tab:scorepython} provides numeric results for projects and clean projects, respectively.  At the project level, Pylint was better than pyflakes and PyChecker for 22 of 25 projects each by raw score, and better by ratio for 23 and 22 projects, respectively.  PyChecker was better than pyflakes for 15 projects, by both raw and ratio measures.  Standard deviations in mutation scores were high for Python:  0.15 for Pylint, 0.06 for pyflakes, and 0.27 for PyChecker.
-
-For {\bf RQ1}, Pylint and pyflakes both killed more than 15,000 mutants killed by no other tool; Pylint killed more mutants, but the relative difference was much smaller than in our Solidity or Java analysis.  It is clear both tools are well worth using, assuming these are not false positives.  Pyflakes' mutation score is lower than unique kills might suggest because it has almost no overlap with the other two tools.  It is doing something different.
-
-The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes, in fact, and better than Pylint, because while it killed fewer mutants, it also produced fewer findings by far, overall.  PyChecker would be a good choice for quick and dirty analysis of code on the fly, perhaps, in that it had excellent mutation scores for some programs (hence a high mean) but is relatively ``quiet'' compared to the other tools.  However, its very low median mutation score is troubling; it may simply not work for some code.  A combination of pyflakes and Pylint seems safer, though adding the relatively low-findings PyChecker seems likely to have little cost.  For Python, all of our measures are required to get a good picture.
-
+The mutant ratios {\bf RQ2} show that pyflakes is more competitive than is obvious from raw kill comparisons.  The mutant ratio is almost three times as good as for Pylint!  That is, some of Pylint's advantage may be due to general verbosity, even once stylistic warnings are turned off.   Combining the results from raw kills and ratios, a strategy of using pyflakes as a quick check for problems, then using both pyflakes and Pylint for more in-depth analysis makes sense.  Whether to use both pyflakes and Pylint in CI is a rquestion of tolerance for handling false positives, but it is clear that the ``price'' of additional warnings from Pylint is (1) high but (2) not without ereturn on investment (in terms of additional real finds).  PyChecker is probably too outdated, and sometimes too verbose when it works, to be useful.
+ 
 \begin{figure}
   {\scriptsize
     % \begin{itemize}
@@ -287,10 +267,10 @@ The mutant ratios {\bf RQ2} suggest that PyChecker might be better than pyflakes
 \label{fig:blogpython}
 \end{figure}
 
-For {\bf RQ3}, there were again no academic comparisons we could find.  However, opinions on the web were quite common (see Figure \ref{fig:blogpython}, which lists ones we examined).  It is hard to summarize the overall opinion here, since it ranges considerably.  There is probably general agreement that PyChecker is old and maybe less useful, but also terse and sometimes helpful.  Pylint is the most recommended tool, and the general complaint that it is too picky was mitigated in our results by turning off clearly informative-only findings; users not configuring Pylint will probably see even more killed mutants, but likely a worse mutant ratio because mutants tend to introduce non-stylistic problems.  Pyflakes is also well liked, and supposedly less verbose than Pylint; we did not see this in our results, but that may be because we configured Pylint, and pyflakes aims to focus on ``actual bugs'' so it is equally verbose for mutants, which are likely to be actual bugs.
-For {\bf RQ4} there were no clean projects for the known-to-be-aggressive Pylint.  Performance for the other two tools was worse on projects for which they were clean, again failing to support the possibility that our definition of killing a mutant is too restrictive.
+For {\bf RQ3}, there were again no academic comparisons we could find.  However, opinions on the web were quite common (see Figure \ref{fig:blogpython}, which lists ones we examined).  It is hard to summarize the overall opinion here, since it ranges considerably.  There is probably general agreement that PyChecker is old and maybe less useful, but also terse and sometimes helpful.  Pylint is the most recommended tool, and the general complaint that it is too picky was somewhat mitigated in our results by turning off warnings that are clearly purely stylistic.  Pyflakes is also well liked, and is considered much less verbose than Pylint; this was definitely reflected in our results, where Pyflakes underperformed in raw kills, but had a much better mutant ratio than Pylint.
+For {\bf RQ4}, Pylint performed significantly better on clean projects.  Performance for the other two tools was essentially unchanged over projects for which they were clean, again failing to strongly support the possibility that our definition of killing a mutant is too restrictive.
 
-For Python, as with Java, many mutants we inspected for {\bf RQ5} involved deletion of a call or change in comparison operator, leading to a likely method call or access to a variable containing {\tt None}, and the generated finding reported just this problem.  Another example of a possibly engine-based mutation difference is that pyflakes did a much better job than the other tools of detecting cases where a mutant caused an exception to be unwisely ignored; these accounted for more than 10\% of differentially-relevant mutants; these may not all be faults, but are certainly worth inspecting.  We assume the issue is engine-based in that while pyflakes did by far the best at this (real) problem, there were instances where another tool found the same notional problem and it did not.  On the other hand, pyflakes, in the sample we examined, did worst at detecting mutants that removed a needed argument from a function call, another common pattern (Pylint performed best for this type of mutant).  Again, based on a qualitative examination of many mutants, we believe the results to primarily ($>$ 75\%) rest on realistic faults, which some tools correctly detected and others did not.
+For Python, all but three of the mutants we examined for {\bf RQ 5} (a random sample of 100 mutants with a kill difference) involved code changes we agreed would introduce a real bug in the code if it was executed.  The large majority involved statement deletions, detected via 1) unused variables/arguments, 2) instances lacking a member field, or 3) undefined variables.  Interestingly, this seems to be an engine issue more than a detector issue, as pyflakes and Pylint both basically support all of these kinds of checks.  In some cases the two tools both detected a problem (but PyChecker did not) but differed as to \emph{which} variable was not used or defined, again suggesting an engine rather than detection rule difference.  Pylint's better performance was mostly, in the sample, due to detecting more of these issues, though it also was the only tool in the sample that detected arithmetic operation changes, due as far as we could determine to constant index changes.  Pylint also detected a few mutants no other tool did, due to the presence of unreachable code.  In one case, it also noticed a protected member access via a change in constant index, a surprisingly complex problem to find, in our opinion.  PyChecker was never the sole detecting tool for any mutants in our sample.
 
 \subsection{Threats to Validity}
 
